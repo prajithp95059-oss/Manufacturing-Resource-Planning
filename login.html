@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign In — Stackly MRP</title>
+<meta name="description" content="Sign in to your Stackly MRP account.">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+:root{
+  /* palette */
+  --ink:        #10131A;
+  --ink-2:      #171B23;
+  --panel:      #1A2029;
+  --panel-2:    #202834;
+  --steel:      #2C3542;
+  --steel-2:    #3A4553;
+  --paper:      #F3F0E8;
+  --paper-2:    #EAE5D8;
+  --blueprint:  #58A9E0;
+  --blueprint-2:#3D7FB0;
+  --amber:      #F0A63A;
+  --amber-2:    #D68C1F;
+  --text-hi:    #EDEFF2;
+  --text-lo:    #93A0AD;
+  --text-lo-2:  #6C7683;
+  --ok:         #62C384;
+  --danger:     #E2645F;
+
+  /* type */
+  --f-display: 'Space Grotesk', sans-serif;
+  --f-body: 'Inter', sans-serif;
+  --f-mono: 'IBM Plex Mono', monospace;
+
+  /* layout */
+  --maxw: 1500px;
+  --pad: clamp(20px, 5vw, 64px);
+  --radius: 14px;
+  --radius-sm: 8px;
+
+  --ease-out: cubic-bezier(.16,.84,.44,1);
+  --ease-in-out: cubic-bezier(.65,0,.35,1);
+}
+
+*,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
+html{ scroll-behavior:smooth; }
+html,body{ background:var(--ink); color:var(--text-hi); }
+body{
+  font-family:var(--f-body);
+  font-size:16px;
+  line-height:1.6;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+img{ max-width:100%; display:block; }
+a{ color:inherit; text-decoration:none; }
+ul{ list-style:none; }
+button{ font-family:inherit; cursor:pointer; border:none; background:none; color:inherit; }
+input,textarea,select{ font-family:inherit; font-size:inherit; color:inherit; }
+svg{ display:block; }
+
+::selection{ background:var(--blueprint); color:var(--ink); }
+
+@media (prefers-reduced-motion: reduce){
+  *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important; }
+}
+
+/* focus visibility */
+a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible{
+  outline:2px solid var(--blueprint);
+  outline-offset:3px;
+  border-radius:4px;
+}
+
+/* ---------- typography ---------- */
+h1,h2,h3,h4{ font-family:var(--f-display); font-weight:600; line-height:1.08; letter-spacing:-0.01em; color:var(--text-hi); }
+h1{ font-size:clamp(2.6rem, 6vw, 5.2rem); }
+h2{ font-size:clamp(2rem, 4.2vw, 3.4rem); }
+h3{ font-size:clamp(1.3rem, 2.2vw, 1.8rem); }
+p{ color:var(--text-lo); max-width:60ch; }
+.mono{ font-family:var(--f-mono); letter-spacing:.02em; }
+
+.eyebrow{
+  display:inline-flex; align-items:center; gap:10px;
+  font-family:var(--f-mono); font-size:.78rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--blueprint); margin-bottom:18px;
+}
+.eyebrow::before{ content:''; width:22px; height:1px; background:var(--blueprint); }
+
+.section-tag{ color:var(--amber); }
+
+/* ---------- layout helpers ---------- */
+.wrap{ max-width:var(--maxw); margin-inline:auto; padding-inline:var(--pad); }
+section{ position:relative; padding-block: clamp(64px, 10vw, 140px); }
+.grid{ display:grid; gap:24px; }
+.g-2{ grid-template-columns:repeat(2,1fr); }
+.g-3{ grid-template-columns:repeat(3,1fr); }
+.g-4{ grid-template-columns:repeat(4,1fr); }
+
+.btn{
+  display:inline-flex; align-items:center; gap:10px;
+  font-family:var(--f-mono); font-size:.82rem; letter-spacing:.06em; text-transform:uppercase;
+  padding:15px 28px; border-radius:999px; white-space:nowrap;
+  transition:transform .4s var(--ease-out), background .3s, color .3s, border-color .3s, box-shadow .3s;
+}
+.btn-primary{ background:var(--amber); color:#1A1204; font-weight:600; }
+.btn-primary:hover{ box-shadow:0 14px 30px -10px rgba(240,166,58,.55); }
+.btn-ghost{ border:1px solid var(--steel-2); color:var(--text-hi); }
+.btn-ghost:hover{ border-color:var(--blueprint); color:var(--blueprint); }
+.btn-block{ width:100%; justify-content:center; }
+.btn svg{ width:15px; height:15px; }
+
+.card{
+  background:linear-gradient(180deg, var(--panel), var(--panel-2));
+  border:1px solid var(--steel);
+  border-radius:var(--radius);
+  padding:32px;
+  position:relative;
+  overflow:hidden;
+}
+.card::after{
+  content:''; position:absolute; inset:0; padding:1px; border-radius:inherit;
+  background:linear-gradient(140deg, rgba(88,169,224,.35), transparent 40%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none;
+}
+
+.stat{ font-family:var(--f-display); font-size:clamp(2.2rem,4vw,3.4rem); color:var(--text-hi); }
+.stat small{ display:block; font-family:var(--f-mono); font-size:.72rem; letter-spacing:.1em; text-transform:uppercase; color:var(--text-lo-2); margin-top:6px; }
+
+/* ---------- background texture ---------- */
+.blueprint-grid{
+  position:absolute; inset:0; pointer-events:none;
+  background-image:
+    linear-gradient(rgba(88,169,224,.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(88,169,224,.08) 1px, transparent 1px);
+  background-size:56px 56px;
+  mask-image:radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 100%);
+}
+.noise-veil{ position:absolute; inset:0; pointer-events:none; background:radial-gradient(ellipse 60% 50% at 50% -10%, rgba(88,169,224,.14), transparent 60%); }
+
+/* ---------- preloader ---------- */
+#preloader{
+  position:fixed; inset:0; z-index:9999; background:var(--ink);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px;
+}
+#preloader .pl-logo{ font-family:var(--f-display); font-size:1.4rem; letter-spacing:.04em; display:flex; align-items:center; gap:10px;}
+#preloader .pl-logo span{ color:var(--amber); }
+#preloader .pl-bar{ width:min(280px,60vw); height:2px; background:var(--steel); position:relative; overflow:hidden; }
+#preloader .pl-bar i{ position:absolute; inset:0; width:0%; background:var(--blueprint); }
+#preloader .pl-pct{ font-family:var(--f-mono); font-size:.75rem; color:var(--text-lo); letter-spacing:.1em; }
+
+/* ---------- custom cursor dot (desktop only) ---------- */
+.cursor-dot{ position:fixed; top:0; left:0; width:8px; height:8px; border-radius:50%; background:var(--amber); pointer-events:none; z-index:9998; transform:translate(-50%,-50%); mix-blend-mode:difference; display:none; }
+@media (hover:hover) and (pointer:fine){ .cursor-dot{ display:block; } }
+
+/* =========================================================
+   NAV
+   ========================================================= */
+.site-nav{
+  position:fixed; top:0; left:0; right:0; z-index:1000;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:20px; padding-inline:max(var(--pad), calc((100% - var(--maxw)) / 2 + var(--pad)));
+  background:rgba(16,19,26,0);
+  border-bottom:1px solid transparent;
+  transition:background .4s, border-color .4s, padding .4s;
+}
+.site-nav.scrolled{ background:rgba(16,19,26,.86); backdrop-filter:blur(14px); border-color:var(--steel); padding-block:14px; }
+.logo{ display:flex; align-items:center; gap:10px; font-family:var(--f-display); font-size:1.2rem; font-weight:700; letter-spacing:.01em; }
+.logo img{ height:70px; width:auto; }
+.nav-links{ display:flex; align-items:center; gap:36px; }
+.nav-links a{
+  position:relative; font-family:var(--f-mono); font-size:.82rem; letter-spacing:.04em; text-transform:uppercase; color:var(--text-lo);
+  padding-block:4px; transition:color .3s;
+}
+.nav-links a::after{ content:''; position:absolute; left:0; bottom:0; width:0; height:1px; background:var(--amber); transition:width .3s var(--ease-out); }
+.nav-links a:hover, .nav-links a.active{ color:var(--text-hi); }
+.nav-links a:hover::after, .nav-links a.active::after{ width:100%; }
+.nav-cta{ display:flex; align-items:center; gap:14px; }
+.nav-toggle{ display:none; flex-direction:column; gap:5px; width:26px; z-index:1200; }
+.nav-toggle span{ height:2px; background:var(--text-hi); border-radius:2px; transition:transform .35s var(--ease-out), opacity .3s; }
+
+/* mobile nav */
+@media (max-width: 980px){
+  .nav-links{
+    position:fixed; inset:0; left:auto; width:min(360px,84vw); background:var(--ink-2);
+    flex-direction:column; align-items:flex-start; justify-content:center; gap:26px; padding:0 40px;
+    border-left:1px solid var(--steel);
+    transform:translateX(100%); transition:transform .5s var(--ease-in-out);
+  }
+  .nav-links.open{ transform:translateX(0); }
+  .nav-links a{ font-size:1.1rem; }
+  .nav-toggle{ display:flex; }
+  .nav-cta .btn-ghost{ display:none; }
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+.site-footer{ background:var(--ink-2); border-top:1px solid var(--steel); padding-block:72px 32px; position:relative; overflow:hidden; }
+.footer-grid{ display:grid; grid-template-columns:1.4fr .8fr .8fr .8fr 1fr; gap:40px; padding-bottom:56px; }
+.footer-brand p{ margin-top:16px; max-width:34ch; }
+.footer-col h4{ font-family:var(--f-mono); font-size:.76rem; letter-spacing:.1em; text-transform:uppercase; color:var(--text-lo-2); margin-bottom:18px; }
+.footer-col a{ display:block; color:var(--text-lo); font-size:.92rem; padding-block:7px; transition:color .3s, transform .3s; }
+.footer-col a:hover{ color:var(--blueprint); }
+.footer-bottom{ display:flex; justify-content:space-between; align-items:center; padding-top:28px; border-top:1px solid var(--steel); font-family:var(--f-mono); font-size:.76rem; color:var(--text-lo-2); flex-wrap:wrap; gap:14px; }
+.footer-social{ display:flex; gap:14px; }
+.footer-social a{ width:36px; height:36px; border:1px solid var(--steel-2); border-radius:50%; display:flex; align-items:center; justify-content:center; transition:.3s; }
+.footer-social a:hover{ border-color:var(--amber); color:var(--amber); }
+
+@media (max-width: 980px){ .footer-grid{ grid-template-columns:repeat(2,1fr); } }
+@media (max-width: 600px){ .footer-grid{ grid-template-columns:1fr; } .footer-bottom{ flex-direction:column; align-items:flex-start; } }
+
+/* =========================================================
+   MARQUEE / TICKER (signature element)
+   ========================================================= */
+.ticker{
+  border-top:1px solid var(--steel); border-bottom:1px solid var(--steel);
+  background:var(--ink-2); overflow:hidden; padding-block:14px;
+}
+.ticker-track{ display:flex; gap:56px; width:max-content; white-space:nowrap; }
+.ticker-track span{ font-family:var(--f-mono); font-size:.82rem; letter-spacing:.05em; color:var(--text-lo); display:flex; align-items:center; gap:10px; }
+.ticker-track span b{ color:var(--amber); }
+.ticker-track span::before{ content:'◆'; color:var(--blueprint); font-size:.6rem; }
+
+/* =========================================================
+   RESPONSIVE GRID COLLAPSES (shared across pages)
+   ========================================================= */
+@media (max-width: 1100px){ .g-4{ grid-template-columns:repeat(2,1fr); } .g-3{ grid-template-columns:repeat(2,1fr);} }
+@media (max-width: 720px){ .g-2,.g-3,.g-4{ grid-template-columns:1fr; } }
+
+/* generic reveal helpers targeted by GSAP */
+.reveal{ opacity:0; }
+.split-line{ overflow:hidden; }
+
+  body{ min-height:100vh; }
+  .auth-wrap{ min-height:100vh; display:grid; grid-template-columns:1fr 1fr; }
+  .auth-visual{ position:relative; overflow:hidden; border-right:1px solid var(--steel); }
+  .auth-visual > img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .auth-visual::after{ content:''; position:absolute; inset:0; background:linear-gradient(180deg, rgba(16,19,26,.2), rgba(16,19,26,.92)); }
+  .auth-visual-content{ position:relative; z-index:2; height:100%; display:flex; flex-direction:column; justify-content:space-between; padding:48px; }
+  .auth-visual-content .logo img{ height:70px; }
+  .auth-quote{ max-width:34ch; }
+  .auth-quote p{ font-family:var(--f-display); font-size:1.5rem; color:var(--text-hi); font-weight:500; line-height:1.35; }
+  .auth-quote .who{ margin-top:20px; display:flex; align-items:center; gap:12px; }
+  .auth-quote .who img{ width:40px; height:40px; border-radius:50%; object-fit:cover; }
+  .auth-quote .who span{ font-family:var(--f-mono); font-size:.76rem; color:var(--text-lo); }
+  .auth-stats{ display:flex; gap:36px; }
+
+  .auth-form-side{ display:flex; align-items:center; justify-content:center; padding:48px var(--pad); position:relative; }
+  .auth-form-side .blueprint-grid{ opacity:.5; }
+  .auth-box{ width:100%; max-width:420px; position:relative; z-index:2; }
+  .auth-tabs{ display:flex; gap:6px; background:var(--panel); border:1px solid var(--steel); border-radius:12px; padding:5px; margin-bottom:36px; }
+  .auth-tabs button{ flex:1; padding:11px; border-radius:8px; font-family:var(--f-mono); font-size:.8rem; text-transform:uppercase; letter-spacing:.05em; color:var(--text-lo); transition:.3s; }
+  .auth-tabs button.active{ background:var(--blueprint); color:#081521; }
+
+  .auth-panel{ display:none; }
+  .auth-panel.active{ display:block; }
+  .field{ display:flex; flex-direction:column; gap:8px; margin-bottom:18px; }
+  .field label{ font-family:var(--f-mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-lo-2); }
+  .field input, .field select{ background:var(--panel); border:1px solid var(--steel-2); border-radius:10px; padding:13px 15px; font-size:.92rem; transition:border-color .3s; }
+  .field input:focus, .field select:focus{ border-color:var(--blueprint); outline:none; }
+  .field-error{ font-family:var(--f-mono); font-size:.74rem; color:var(--danger); margin-top:6px; display:none; }
+  .field-error.show{ display:block; }
+  .field-success{ font-family:var(--f-mono); font-size:.78rem; color:var(--ok); background:rgba(98,195,132,.1); border:1px solid var(--ok); border-radius:8px; padding:10px 14px; margin-bottom:20px; display:none; }
+  .field-success.show{ display:block; }
+  .field input.invalid, .field select.invalid{ border-color:var(--danger); }
+  .field-row{ display:flex; justify-content:space-between; align-items:center; margin-bottom:22px; }
+  .field-row label{ display:flex; align-items:center; gap:8px; font-size:.85rem; color:var(--text-lo); }
+  .field-row a{ font-family:var(--f-mono); font-size:.78rem; color:var(--blueprint); }
+  .divider{ display:flex; align-items:center; gap:14px; margin:26px 0; }
+  .divider::before,.divider::after{ content:''; flex:1; height:1px; background:var(--steel); }
+  .divider span{ font-family:var(--f-mono); font-size:.72rem; color:var(--text-lo-2); text-transform:uppercase; }
+  .sso-row{ display:flex; gap:12px; }
+  .sso-btn{ flex:1; border:1px solid var(--steel-2); border-radius:10px; padding:12px; display:flex; align-items:center; justify-content:center; gap:8px; font-size:.85rem; transition:.3s; }
+  .sso-btn:hover{ border-color:var(--blueprint); }
+  .sso-btn svg{ width:18px; height:18px; flex-shrink:0; }
+
+  /* ---------- password field with eye toggle ---------- */
+  .field-password{ position:relative; }
+  .field-password input{ padding-right:46px; width:100%; }
+  .pw-toggle{
+    position:absolute; right:12px; top:50%; transform:translateY(-50%);
+    width:26px; height:26px; display:flex; align-items:center; justify-content:center;
+    color:var(--text-lo-2); transition:color .3s;
+  }
+  .pw-toggle:hover{ color:var(--blueprint); }
+  .pw-toggle svg{ width:19px; height:19px; }
+  .pw-toggle .eye-off{ display:none; }
+  .pw-toggle.showing .eye{ display:none; }
+  .pw-toggle.showing .eye-off{ display:block; }
+  .auth-footer-text{ text-align:center; margin-top:28px; font-size:.88rem; color:var(--text-lo); }
+  .auth-footer-text a{ color:var(--blueprint); }
+
+  /* ---------- role selector ---------- */
+  .role-select{ display:flex; gap:10px; margin-bottom:24px; }
+  .role-option{
+    flex:1; position:relative; cursor:pointer;
+  }
+  .role-option input{ position:absolute; opacity:0; width:0; height:0; }
+  .role-option .role-card{
+    display:flex; align-items:center; gap:10px; padding:13px 14px;
+    border:1px solid var(--steel-2); border-radius:10px; background:var(--panel);
+    transition:border-color .3s, background .3s;
+  }
+  .role-option .role-card svg{ width:18px; height:18px; color:var(--text-lo); transition:color .3s; flex-shrink:0; }
+  .role-option .role-card span{ font-family:var(--f-mono); font-size:.8rem; text-transform:uppercase; letter-spacing:.04em; color:var(--text-lo); transition:color .3s; }
+  .role-option input:checked + .role-card{ border-color:var(--blueprint); background:rgba(88,169,224,.08); }
+  .role-option input:checked + .role-card svg,
+  .role-option input:checked + .role-card span{ color:var(--blueprint); }
+  .role-option input:focus-visible + .role-card{ outline:2px solid var(--blueprint); outline-offset:2px; }
+
+  @media (max-width:900px){
+    .auth-wrap{ grid-template-columns:1fr; }
+    .auth-visual{ display:none; }
+  }
+</style>
+</head>
+<body>
+
+
+<div class="auth-wrap">
+  <div class="auth-visual">
+    <img src="./assets/login.webp" alt="Automated production line running on a factory floor">
+    <div class="auth-visual-content">
+      <a href="index.html" class="logo"><img src="./stackly.webp" alt="Stackly"></a>
+      <div class="auth-quote reveal">
+        <p>"Stackly is the first system where the schedule on screen matches the schedule on the floor."</p>
+        <div class="who"><img src="./assets/a6.webp" alt="Portrait of Marcus Ihedigbo"><span>Marcus Ihedigbo — Plant Director, Voss Industrial</span></div>
+      </div>
+      <div class="auth-stats reveal">
+        <div class="stat" style="font-size:1.6rem">640+<small>Plants live</small></div>
+        <div class="stat" style="font-size:1.6rem">99.4%<small>Schedule adherence</small></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="auth-form-side">
+    <div class="blueprint-grid"></div>
+    <div class="auth-box">
+      <a href="index.html" class="logo" style="margin-bottom:36px; display:flex;"><img src="./stackly.webp" alt="Stackly"></a>
+      <div class="auth-tabs">
+        <button class="active" data-tab="signin">Sign In</button>
+        <button data-tab="signup">Create Account</button>
+      </div>
+
+      <div class="auth-panel active" data-panel="signin">
+        <h2 style="font-size:1.6rem;">Welcome back.</h2>
+        <p style="margin-top:8px; margin-bottom:28px;">Sign in to your plant's control center.</p>
+        <span class="field-success" id="signin-success-msg"></span>
+
+        <div class="role-select" role="radiogroup" aria-label="Sign in as">
+          <label class="role-option">
+            <input type="radio" name="signin-role" value="user" checked>
+            <span class="role-card">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>
+              <span>User</span>
+            </span>
+          </label>
+          <label class="role-option">
+            <input type="radio" name="signin-role" value="admin">
+            <span class="role-card">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 6v6c0 5 3.4 8.6 8 10 4.6-1.4 8-5 8-10V6l-8-4Z"/><path d="m9.5 12 2 2 3.5-3.5"/></svg>
+              <span>Admin</span>
+            </span>
+          </label>
+        </div>
+
+        <form id="signin-form" onsubmit="return false;">
+          <div class="field">
+            <label>Work email</label>
+            <input type="email" id="signin-email" required>
+            <span class="field-error" id="signin-email-err">Please enter a valid email address.</span>
+          </div>
+          <div class="field">
+            <label>Password</label>
+            <div class="field-password">
+              <input type="password" id="signin-password" required>
+              <button type="button" class="pw-toggle" aria-label="Show password" onclick="togglePassword(this)">
+                <svg class="eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 12S5 5 12 5s10.5 7 10.5 7-3.5 7-10.5 7S1.5 12 1.5 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg class="eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19.5C5 19.5 1.5 12 1.5 12a20.6 20.6 0 0 1 5.06-5.94M9.9 4.72A10.6 10.6 0 0 1 12 4.5c7 0 10.5 7.5 10.5 7.5a20.5 20.5 0 0 1-2.42 3.5M14.12 14.12a3 3 0 1 1-4.24-4.24"/><path d="M1.5 1.5 22.5 22.5"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="field-row">
+            <label><input type="checkbox"> Keep me signed in</label>
+            <a href="./404.html">Forgot password?</a>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block magnetic" onclick="handleSignIn()">Sign In →</button>
+        </form>
+        <div class="divider"><span>or continue with</span></div>
+        <div class="sso-row">
+          <button class="sso-btn" onclick="error()">
+            <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M23.52 12.27c0-.85-.08-1.67-.22-2.45H12v4.64h6.47a5.53 5.53 0 0 1-2.4 3.63v3h3.87c2.27-2.09 3.58-5.17 3.58-8.82Z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.07 7.94-2.91l-3.87-3c-1.08.72-2.45 1.15-4.07 1.15-3.13 0-5.78-2.11-6.73-4.96H1.27v3.1A12 12 0 0 0 12 24Z"/><path fill="#FBBC05" d="M5.27 14.28A7.2 7.2 0 0 1 4.89 12c0-.79.14-1.56.38-2.28v-3.1H1.27A12 12 0 0 0 0 12c0 1.94.46 3.77 1.27 5.38l4-3.1Z"/><path fill="#EA4335" d="M12 4.75c1.76 0 3.34.6 4.58 1.79l3.44-3.44C17.94 1.19 15.24 0 12 0A12 12 0 0 0 1.27 6.62l4 3.1C6.22 6.86 8.87 4.75 12 4.75Z"/></svg>
+            <span>Google</span>
+          </button>
+          <button class="sso-btn" onclick="error()">
+            <svg viewBox="0 0 23 23"><path fill="#F25022" d="M0 0h11v11H0z"/><path fill="#7FBA00" d="M12 0h11v11H12z"/><path fill="#00A4EF" d="M0 12h11v11H0z"/><path fill="#FFB900" d="M12 12h11v11H12z"/></svg>
+            <span>Microsoft SSO</span>
+          </button>
+        </div>
+        <p class="auth-footer-text">New to Stackly? <a href="#" onclick="switchTab('signup');return false;">Create an account</a></p>
+        <p class="auth-footer-text"><a href="index.html" >Back to Home</a></p>
+      </div>
+
+      <div class="auth-panel" data-panel="signup">
+        <h2 style="font-size:1.6rem;">Set up your plant.</h2>
+        <p style="margin-top:8px; margin-bottom:28px;">Start a free 14-day trial — no card required.</p>
+        <form id="signup-form" onsubmit="return false;" novalidate>
+          <div class="field">
+            <label>Full name</label>
+            <input type="text" id="signup-name" autocomplete="name" placeholder="Jordan Avery" required>
+            <span class="field-error" id="signup-name-err">Please enter your full name (letters only, min 2 characters).</span>
+          </div>
+          <div class="field">
+            <label>Company</label>
+            <input type="text" id="signup-company" autocomplete="organization" placeholder="Ferro Dynamics" required>
+            <span class="field-error" id="signup-company-err">Please enter your company name.</span>
+          </div>
+          <div class="field">
+            <label>Work email</label>
+            <input type="email" id="signup-email" autocomplete="email" placeholder="you@company.com" required>
+            <span class="field-error" id="signup-email-err">Please enter a valid work email address.</span>
+          </div>
+          <div class="field">
+            <label>Password</label>
+            <div class="field-password">
+              <input type="password" id="signup-password" autocomplete="new-password" required>
+              <button type="button" class="pw-toggle" aria-label="Show password" onclick="togglePassword(this)">
+                <svg class="eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 12S5 5 12 5s10.5 7 10.5 7-3.5 7-10.5 7S1.5 12 1.5 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg class="eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19.5C5 19.5 1.5 12 1.5 12a20.6 20.6 0 0 1 5.06-5.94M9.9 4.72A10.6 10.6 0 0 1 12 4.5c7 0 10.5 7.5 10.5 7.5a20.5 20.5 0 0 1-2.42 3.5M14.12 14.12a3 3 0 1 1-4.24-4.24"/><path d="M1.5 1.5 22.5 22.5"/></svg>
+              </button>
+            </div>
+            <span class="field-error" id="signup-password-err">Min 8 characters, with at least one letter and one number.</span>
+          </div>
+          <div class="field">
+            <label>Confirm password</label>
+            <div class="field-password">
+              <input type="password" id="signup-confirm-password" autocomplete="new-password" required>
+              <button type="button" class="pw-toggle" aria-label="Show password" onclick="togglePassword(this)">
+                <svg class="eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 12S5 5 12 5s10.5 7 10.5 7-3.5 7-10.5 7S1.5 12 1.5 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg class="eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19.5C5 19.5 1.5 12 1.5 12a20.6 20.6 0 0 1 5.06-5.94M9.9 4.72A10.6 10.6 0 0 1 12 4.5c7 0 10.5 7.5 10.5 7.5a20.5 20.5 0 0 1-2.42 3.5M14.12 14.12a3 3 0 1 1-4.24-4.24"/><path d="M1.5 1.5 22.5 22.5"/></svg>
+              </button>
+            </div>
+            <span class="field-error" id="pw-match-msg">Passwords do not match.</span>
+          </div>
+          <span class="field-error" id="signup-general-err">Please fix the errors above to continue.</span>
+          <button type="button" class="btn btn-primary btn-block magnetic" onclick="handleSignUp()">Create Account →</button>
+        </form>
+        <div class="divider"><span>or continue with</span></div>
+        <div class="sso-row">
+          <button class="sso-btn" onclick="error()">
+            <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M23.52 12.27c0-.85-.08-1.67-.22-2.45H12v4.64h6.47a5.53 5.53 0 0 1-2.4 3.63v3h3.87c2.27-2.09 3.58-5.17 3.58-8.82Z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.07 7.94-2.91l-3.87-3c-1.08.72-2.45 1.15-4.07 1.15-3.13 0-5.78-2.11-6.73-4.96H1.27v3.1A12 12 0 0 0 12 24Z"/><path fill="#FBBC05" d="M5.27 14.28A7.2 7.2 0 0 1 4.89 12c0-.79.14-1.56.38-2.28v-3.1H1.27A12 12 0 0 0 0 12c0 1.94.46 3.77 1.27 5.38l4-3.1Z"/><path fill="#EA4335" d="M12 4.75c1.76 0 3.34.6 4.58 1.79l3.44-3.44C17.94 1.19 15.24 0 12 0A12 12 0 0 0 1.27 6.62l4 3.1C6.22 6.86 8.87 4.75 12 4.75Z"/></svg>
+            <span>Google</span>
+          </button>
+          <button class="sso-btn" onclick="error()">
+            <svg viewBox="0 0 23 23"><path fill="#F25022" d="M0 0h11v11H0z"/><path fill="#7FBA00" d="M12 0h11v11H12z"/><path fill="#00A4EF" d="M0 12h11v11H0z"/><path fill="#FFB900" d="M12 12h11v11H12z"/></svg>
+            <span>Microsoft SSO</span>
+          </button>
+        </div>
+        <p class="auth-footer-text">Already have an account? <a href="#" onclick="switchTab('signin');return false;">Sign in</a></p>
+        <p class="auth-footer-text"><a href="index.html" >Back to Home</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+
+gsap.registerPlugin(ScrollTrigger);
+
+/* ---------------------------------------------------------
+   0. Lightweight SplitText replacement (chars / words / lines)
+   GSAP's SplitText is a Club plugin, so we hand-roll the split
+   the same way the GSAP docs describe doing it manually.
+--------------------------------------------------------- */
+function splitWords(el){
+  const words = el.textContent.trim().split(/\s+/);
+  el.innerHTML = words.map(w => `<span class="w"><span class="wi">${w}</span></span>`).join(' ');
+  el.querySelectorAll('.w').forEach(s=>{ s.style.display='inline-block'; s.style.overflow='hidden'; s.style.verticalAlign='top'; });
+  el.querySelectorAll('.wi').forEach(s=>{ s.style.display='inline-block'; });
+  return el.querySelectorAll('.wi');
+}
+function splitChars(el){
+  const text = el.textContent.trim();
+  el.innerHTML = text.split('').map(c => `<span class="c">${c === ' ' ? '&nbsp;' : c}</span>`).join('');
+  el.querySelectorAll('.c').forEach(s=>{ s.style.display='inline-block'; });
+  return el.querySelectorAll('.c');
+}
+
+/* ---------------------------------------------------------
+   1. Preloader
+--------------------------------------------------------- */
+window.addEventListener('load', () => {
+  const pre = document.getElementById('preloader');
+  if(!pre){ startPageAnimations(); return; }
+  const bar = pre.querySelector('.pl-bar i');
+  const pct = pre.querySelector('.pl-pct');
+  const counter = { v: 0 };
+  gsap.to(counter, {
+    v: 100, duration: 1.4, ease:'power2.inOut',
+    onUpdate: () => { bar.style.width = counter.v + '%'; pct.textContent = Math.floor(counter.v) + '%'; },
+    onComplete: () => {
+      gsap.to(pre, { yPercent:-100, duration:.9, ease:'power4.inOut', delay:.15,
+        onComplete: () => { pre.style.display='none'; startPageAnimations(); }
+      });
+    }
+  });
+});
+
+/* Fallback: if there's no preloader element the load handler above
+   already calls startPageAnimations(). If JS runs after 'load' fired
+   (rare) kick things off directly. */
+if(document.readyState === 'complete' && !document.getElementById('preloader')){
+  startPageAnimations();
+}
+
+/* ---------------------------------------------------------
+   2. Nav: scroll state + mobile toggle
+--------------------------------------------------------- */
+const nav = document.querySelector('.site-nav');
+const toggle = document.querySelector('.nav-toggle');
+const navLinks = document.querySelector('.nav-links');
+
+window.addEventListener('scroll', () => {
+  if(!nav) return;
+  nav.classList.toggle('scrolled', window.scrollY > 40);
+}, { passive:true });
+
+if(toggle){
+  toggle.addEventListener('click', () => {
+    navLinks.classList.toggle('open');
+    const spans = toggle.querySelectorAll('span');
+    const open = navLinks.classList.contains('open');
+    gsap.to(spans[0], { rotate: open?45:0, y: open?6:0, duration:.3 });
+    gsap.to(spans[1], { opacity: open?0:1, duration:.2 });
+    gsap.to(spans[2], { rotate: open?-45:0, y: open?-6:0, duration:.3 });
+  });
+  navLinks?.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+}
+
+/* ---------------------------------------------------------
+   3. Custom cursor
+--------------------------------------------------------- */
+const dot = document.querySelector('.cursor-dot');
+if(dot && matchMedia('(hover:hover) and (pointer:fine)').matches){
+  window.addEventListener('mousemove', e => {
+    gsap.to(dot, { x:e.clientX, y:e.clientY, duration:.05 });
+  });
+}
+
+/* ---------------------------------------------------------
+   4. Magnetic buttons
+--------------------------------------------------------- */
+/* Magnetic hover-follow disabled: buttons stay fixed in place on hover. */
+
+/* ---------------------------------------------------------
+   5. Ticker duplication for seamless marquee
+--------------------------------------------------------- */
+document.querySelectorAll('.ticker-track').forEach(track=>{
+  track.innerHTML += track.innerHTML;
+  const width = track.scrollWidth / 2;
+  gsap.to(track, { x: -width, duration: Math.max(18, width/60), ease:'none', repeat:-1 });
+});
+
+/* ---------------------------------------------------------
+   6. Page-load hero + scroll-triggered reveals
+--------------------------------------------------------- */
+function startPageAnimations(){
+
+  /* Hero title split-word entrance */
+  document.querySelectorAll('[data-split="words"]').forEach(el=>{
+    const chars = splitWords(el);
+    gsap.set(chars, { yPercent:130, rotate:4 });
+    gsap.to(chars, { yPercent:0, rotate:0, duration:1.1, ease:'power4.out', stagger:0.045, delay:.15 });
+  });
+  document.querySelectorAll('[data-split="chars"]').forEach(el=>{
+    const chars = splitChars(el);
+    gsap.set(chars, { opacity:0, yPercent:60 });
+    gsap.to(chars, { opacity:1, yPercent:0, duration:.6, ease:'power3.out', stagger:0.02, delay:.2 });
+  });
+
+  /* Hero misc fade-ups (data-hero) */
+  gsap.utils.toArray('[data-hero]').forEach((el,i)=>{
+    gsap.fromTo(el, { opacity:0, y:26 }, { opacity:1, y:0, duration:1, ease:'power3.out', delay:.4 + i*0.12 });
+  });
+
+  /* Blueprint SVG draw-on-load */
+  document.querySelectorAll('.draw-svg path, .draw-svg line, .draw-svg circle, .draw-svg polyline').forEach(p=>{
+    const len = p.getTotalLength ? p.getTotalLength() : 100;
+    p.style.strokeDasharray = len;
+    p.style.strokeDashoffset = len;
+    gsap.to(p, { strokeDashoffset:0, duration:2.2, ease:'power2.inOut', delay:.3 });
+  });
+
+  /* Generic scroll reveal */
+  gsap.utils.toArray('.reveal').forEach(el=>{
+    gsap.fromTo(el, { opacity:0, y:40 }, {
+      opacity:1, y:0, duration:.9, ease:'power3.out',
+      scrollTrigger:{ trigger:el, start:'top 88%' }
+    });
+  });
+
+  /* Staggered reveal groups */
+  gsap.utils.toArray('.reveal-group').forEach(group=>{
+    const items = group.children;
+    gsap.fromTo(items, { opacity:0, y:44 }, {
+      opacity:1, y:0, duration:.8, ease:'power3.out', stagger:0.12,
+      scrollTrigger:{ trigger:group, start:'top 85%' }
+    });
+  });
+
+  /* Image clip-reveal */
+  gsap.utils.toArray('.img-reveal').forEach(el=>{
+    gsap.fromTo(el, { clipPath:'inset(0 0 100% 0)' }, {
+      clipPath:'inset(0 0 0% 0)', duration:1.2, ease:'power4.out',
+      scrollTrigger:{ trigger:el, start:'top 85%' }
+    });
+    const img = el.querySelector('img');
+    if(img){
+      gsap.fromTo(img, { scale:1.25 }, {
+        scale:1, duration:1.6, ease:'power3.out',
+        scrollTrigger:{ trigger:el, start:'top 85%' }
+      });
+    }
+  });
+
+  /* Parallax layers */
+  gsap.utils.toArray('[data-parallax]').forEach(el=>{
+    const speed = parseFloat(el.dataset.parallax) || 0.2;
+    gsap.to(el, { yPercent: speed*100, ease:'none', scrollTrigger:{ trigger: el.parentElement, start:'top bottom', end:'bottom top', scrub:true } });
+  });
+
+  /* Number counters */
+  gsap.utils.toArray('[data-counter]').forEach(el=>{
+    const target = parseFloat(el.dataset.counter);
+    const decimals = (el.dataset.counter.split('.')[1] || '').length;
+    const counter = { v:0 };
+    ScrollTrigger.create({
+      trigger: el, start:'top 90%', once:true,
+      onEnter: () => gsap.to(counter, { v: target, duration:1.8, ease:'power2.out',
+        onUpdate: () => el.textContent = counter.v.toFixed(decimals) + (el.dataset.suffix||'') })
+    });
+  });
+
+  /* Card tilt on hover */
+  document.querySelectorAll('.tilt').forEach(card=>{
+    card.addEventListener('mousemove', e=>{
+      const r = card.getBoundingClientRect();
+      const px = (e.clientX - r.left)/r.width - .5;
+      const py = (e.clientY - r.top)/r.height - .5;
+      gsap.to(card, { rotateY: px*8, rotateX: -py*8, duration:.4, ease:'power2.out', transformPerspective:700 });
+    });
+    card.addEventListener('mouseleave', ()=> gsap.to(card, { rotateY:0, rotateX:0, duration:.6, ease:'power3.out' }));
+  });
+
+  /* Horizontal process rail (if present) */
+  const rail = document.querySelector('.process-rail');
+  if(rail){
+    const track = rail.querySelector('.process-track');
+    const distance = () => track.scrollWidth - rail.clientWidth;
+    ScrollTrigger.create({
+      trigger: rail, start:'top top', end:() => '+=' + distance(), pin:true, scrub:1,
+      onUpdate: self => { track.style.transform = `translateX(-${self.progress * distance()}px)`; }
+    });
+  }
+
+  ScrollTrigger.refresh();
+}
+
+/* If load already fired before this script executed (rare on fast caches) */
+document.addEventListener('DOMContentLoaded', () => {
+  if(document.readyState === 'complete' || performance.timing.loadEventEnd > 0){
+    // safety net only; startPageAnimations is normally invoked from the load handler
+  }
+});
+
+</script>
+<script>
+  function switchTab(name){
+    document.querySelectorAll('.auth-tabs button').forEach(b=> b.classList.toggle('active', b.dataset.tab===name));
+    document.querySelectorAll('.auth-panel').forEach(p=> p.classList.toggle('active', p.dataset.panel===name));
+  }
+  document.querySelectorAll('.auth-tabs button').forEach(btn=>{
+    btn.addEventListener('click', ()=> switchTab(btn.dataset.tab));
+  });
+
+  ['signup-name','signup-company','signup-email','signup-password','signup-confirm-password','signin-email'].forEach(function(id){
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.addEventListener('input', function(){
+      el.classList.remove('invalid');
+      const errMap = { 'signin-email': 'signin-email-err' };
+      const errEl = errMap[id] ? document.getElementById(errMap[id]) : null;
+      if(errEl) errEl.classList.remove('show');
+    });
+  });
+
+  function handleSignIn(){
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    const role = document.querySelector('input[name="signin-role"]:checked')?.value || 'user';
+    const emailEl = document.getElementById('signin-email');
+    const emailErr = document.getElementById('signin-email-err');
+    const email = emailEl ? emailEl.value.trim() : '';
+
+    if(!emailPattern.test(email)){
+      setFieldError(emailEl, emailErr, true);
+      if(emailEl) emailEl.focus();
+      return;
+    }
+    setFieldError(emailEl, emailErr, false);
+
+    localStorage.setItem('stackly_user_email', email);
+    // Always land on the main "Dashboard" section right after signing in —
+    // any section remembered from a previous session shouldn't override this.
+    localStorage.setItem('stackly_user_dashboard_view', 'dashboard');
+    localStorage.setItem('stackly_admin_dashboard_view', 'dashboard');
+    window.location.href = role === 'admin' ? 'admin-dashboard.html' : 'user-dashboard.html';
+  }
+
+  function togglePassword(btn){
+    const input = btn.previousElementSibling;
+    const showing = btn.classList.toggle('showing');
+    input.type = showing ? 'text' : 'password';
+    btn.setAttribute('aria-label', showing ? 'Hide password' : 'Show password');
+  }
+
+  function setFieldError(input, errEl, show){
+    if(input) input.classList.toggle('invalid', !!show);
+    if(errEl) errEl.classList.toggle('show', !!show);
+  }
+
+  function handleSignUp(){
+    const name = document.getElementById('signup-name');
+    const company = document.getElementById('signup-company');
+    const email = document.getElementById('signup-email');
+    const pw = document.getElementById('signup-password');
+    const confirm = document.getElementById('signup-confirm-password');
+    const generalErr = document.getElementById('signup-general-err');
+
+    const nameErr = document.getElementById('signup-name-err');
+    const companyErr = document.getElementById('signup-company-err');
+    const emailErr = document.getElementById('signup-email-err');
+    const pwErr = document.getElementById('signup-password-err');
+    const confirmErr = document.getElementById('pw-match-msg');
+
+    const namePattern = /^[A-Za-z][A-Za-z\s'.-]{1,}$/;
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/;
+
+    let valid = true;
+
+    if(!namePattern.test(name.value.trim())){
+      setFieldError(name, nameErr, true);
+      valid = false;
+    } else {
+      setFieldError(name, nameErr, false);
+    }
+
+    if(company.value.trim().length < 2){
+      setFieldError(company, companyErr, true);
+      valid = false;
+    } else {
+      setFieldError(company, companyErr, false);
+    }
+
+    if(!emailPattern.test(email.value.trim())){
+      setFieldError(email, emailErr, true);
+      valid = false;
+    } else {
+      setFieldError(email, emailErr, false);
+    }
+
+    if(!passwordPattern.test(pw.value)){
+      setFieldError(pw, pwErr, true);
+      valid = false;
+    } else {
+      setFieldError(pw, pwErr, false);
+    }
+
+    if(pw.value !== confirm.value || confirm.value === ''){
+      setFieldError(confirm, confirmErr, true);
+      valid = false;
+    } else {
+      setFieldError(confirm, confirmErr, false);
+    }
+
+    if(!valid){
+      generalErr.classList.add('show');
+      const firstInvalid = document.querySelector('#signup-form .invalid');
+      if(firstInvalid) firstInvalid.focus();
+      return;
+    }
+
+    generalErr.classList.remove('show');
+
+    // Account created — send the user back to the login (sign in) screen.
+    switchTab('signin');
+    const signinEmail = document.getElementById('signin-email');
+    if(signinEmail) signinEmail.value = email.value.trim();
+    const signinMsg = document.getElementById('signin-success-msg');
+    if(signinMsg){
+      signinMsg.textContent = 'Account created — please sign in.';
+      signinMsg.classList.add('show');
+    }
+  }
+  function error(){
+    window.location.href="404.html";
+  }
+</script>
+</body>
+</html>

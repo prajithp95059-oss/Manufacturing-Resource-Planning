@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>404 — Page Not Found | Stackly MRP</title>
+<meta name="description" content="This page isn't on the routing sheet. Head back to Stackly MRP.">
+<meta name="robots" content="noindex">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+:root{
+  /* palette */
+  --ink:        #10131A;
+  --ink-2:      #171B23;
+  --panel:      #1A2029;
+  --panel-2:    #202834;
+  --steel:      #2C3542;
+  --steel-2:    #3A4553;
+  --paper:      #F3F0E8;
+  --paper-2:    #EAE5D8;
+  --blueprint:  #58A9E0;
+  --blueprint-2:#3D7FB0;
+  --amber:      #F0A63A;
+  --amber-2:    #D68C1F;
+  --text-hi:    #EDEFF2;
+  --text-lo:    #93A0AD;
+  --text-lo-2:  #6C7683;
+  --ok:         #62C384;
+  --danger:     #E2645F;
+
+  /* type */
+  --f-display: 'Space Grotesk', sans-serif;
+  --f-body: 'Inter', sans-serif;
+  --f-mono: 'IBM Plex Mono', monospace;
+
+  /* layout */
+  --maxw: 1500px;
+  --pad: clamp(20px, 5vw, 64px);
+  --radius: 14px;
+  --radius-sm: 8px;
+
+  --ease-out: cubic-bezier(.16,.84,.44,1);
+  --ease-in-out: cubic-bezier(.65,0,.35,1);
+}
+
+*,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; min-width:0; }
+html{ scroll-behavior:smooth; }
+html,body{ background:var(--ink); color:var(--text-hi); max-width:100%; overflow-x:hidden; }
+body.nav-open{ overflow:hidden; }
+body{
+  font-family:var(--f-body);
+  font-size:16px;
+  line-height:1.6;
+  overflow-x:hidden;
+  width:100%;
+  -webkit-font-smoothing:antialiased;
+}
+img{ max-width:100%; display:block; }
+a{ color:inherit; text-decoration:none; }
+ul{ list-style:none; }
+button{ font-family:inherit; cursor:pointer; border:none; background:none; color:inherit; }
+input,textarea,select{ font-family:inherit; font-size:inherit; color:inherit; max-width:100%; }
+svg{ display:block; }
+
+::selection{ background:var(--blueprint); color:var(--ink); }
+
+@media (prefers-reduced-motion: reduce){
+  *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important; }
+}
+
+/* focus visibility */
+a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible{
+  outline:2px solid var(--blueprint);
+  outline-offset:3px;
+  border-radius:4px;
+}
+
+/* ---------- typography ---------- */
+h1,h2,h3,h4{ font-family:var(--f-display); font-weight:600; line-height:1.08; letter-spacing:-0.01em; color:var(--text-hi); }
+h1{ font-size:clamp(2.6rem, 6vw, 5.2rem); }
+h2{ font-size:clamp(2rem, 4.2vw, 3.4rem); }
+h3{ font-size:clamp(1.3rem, 2.2vw, 1.8rem); }
+p{ color:var(--text-lo); max-width:60ch; }
+.mono{ font-family:var(--f-mono); letter-spacing:.02em; }
+
+.eyebrow{
+  display:inline-flex; align-items:center; gap:10px; flex-wrap:wrap;
+  font-family:var(--f-mono); font-size:.78rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--blueprint); margin-bottom:18px;
+}
+.eyebrow::before{ content:''; width:22px; height:1px; flex-shrink:0; background:var(--blueprint); }
+
+/* ---------- layout helpers ---------- */
+.wrap{ max-width:var(--maxw); margin-inline:auto; padding-inline:var(--pad); width:100%; }
+section{ position:relative; padding-block: clamp(64px, 10vw, 140px); }
+
+.btn{
+  display:inline-flex; align-items:center; gap:10px;
+  font-family:var(--f-mono); font-size:.82rem; letter-spacing:.06em; text-transform:uppercase;
+  padding:15px 28px; border-radius:999px; white-space:nowrap;
+  transition:transform .4s var(--ease-out), background .3s, color .3s, border-color .3s, box-shadow .3s;
+}
+.btn-primary{ background:var(--amber); color:#1A1204; font-weight:600; }
+.btn-primary:hover{ box-shadow:0 14px 30px -10px rgba(240,166,58,.55); }
+.btn-ghost{ border:1px solid var(--steel-2); color:var(--text-hi); }
+.btn-ghost:hover{ border-color:var(--blueprint); color:var(--blueprint); }
+.btn svg{ width:15px; height:15px; }
+
+/* ---------- background texture ---------- */
+.blueprint-grid{
+  position:absolute; inset:0; pointer-events:none;
+  background-image:
+    linear-gradient(rgba(88,169,224,.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(88,169,224,.08) 1px, transparent 1px);
+  background-size:56px 56px;
+  mask-image:radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 100%);
+}
+.noise-veil{ position:absolute; inset:0; pointer-events:none; background:radial-gradient(ellipse 60% 50% at 50% -10%, rgba(88,169,224,.14), transparent 60%); }
+
+/* ---------- preloader ---------- */
+#preloader{
+  position:fixed; inset:0; z-index:9999; background:var(--ink);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px;
+}
+#preloader .pl-logo{ font-family:var(--f-display); font-size:1.4rem; letter-spacing:.04em; display:flex; align-items:center; gap:10px;}
+#preloader .pl-logo span{ color:var(--amber); }
+#preloader .pl-bar{ width:min(280px,60vw); height:2px; background:var(--steel); position:relative; overflow:hidden; }
+#preloader .pl-bar i{ position:absolute; inset:0; width:0%; background:var(--blueprint); }
+#preloader .pl-pct{ font-family:var(--f-mono); font-size:.75rem; color:var(--text-lo); letter-spacing:.1em; }
+
+/* ---------- custom cursor dot (desktop only) ---------- */
+.cursor-dot{ position:fixed; top:0; left:0; width:8px; height:8px; border-radius:50%; background:var(--amber); pointer-events:none; z-index:9998; transform:translate(-50%,-50%); mix-blend-mode:difference; display:none; }
+@media (hover:hover) and (pointer:fine){ .cursor-dot{ display:block; } }
+
+/* =========================================================
+   NAV
+   ========================================================= */
+.site-nav{
+  position:fixed; top:0; left:0; right:0; z-index:1000;
+  display:flex; align-items:center; justify-content:space-between;
+  gap:12px;
+  padding:20px; padding-inline:max(var(--pad), calc((100% - var(--maxw)) / 2 + var(--pad)));
+  background:rgba(16,19,26,0);
+  border-bottom:1px solid transparent;
+  transition:background .4s, border-color .4s, padding .4s;
+}
+.site-nav.scrolled{ background:rgba(16,19,26,.86); backdrop-filter:blur(14px); border-color:var(--steel); padding-block:14px; }
+.logo{ display:flex; align-items:center; gap:10px; font-family:var(--f-display); font-size:1.2rem; font-weight:700; letter-spacing:.01em; flex-shrink:0; }
+.logo img{ height:70px; width:auto; }
+.nav-links{ display:flex; align-items:center; gap:36px; }
+.nav-links a{
+  position:relative; font-family:var(--f-mono); font-size:.82rem; letter-spacing:.04em; text-transform:uppercase; color:var(--text-lo);
+  padding-block:4px; transition:color .3s;
+}
+.nav-links a::after{ content:''; position:absolute; left:0; bottom:0; width:0; height:1px; background:var(--amber); transition:width .3s var(--ease-out); }
+.nav-links a:hover, .nav-links a.active{ color:var(--text-hi); }
+.nav-links a:hover::after, .nav-links a.active::after{ width:100%; }
+.nav-cta{ display:flex; align-items:center; gap:14px; flex-shrink:0; }
+.nav-toggle{ display:none; flex-direction:column; gap:5px; width:26px; flex-shrink:0; z-index:1200; }
+.nav-toggle span{ height:2px; background:var(--text-hi); border-radius:2px; transition:transform .35s var(--ease-out), opacity .3s; }
+
+/* mobile nav backdrop */
+.nav-backdrop{
+  position:fixed; inset:0; background:rgba(8,10,14,.55); backdrop-filter:blur(2px);
+  opacity:0; visibility:hidden; transition:opacity .4s var(--ease-in-out), visibility 0s linear .4s;
+  z-index:900;
+}
+.nav-backdrop.open{ opacity:1; visibility:visible; transition:opacity .4s var(--ease-in-out); }
+
+/* mobile nav */
+@media (max-width: 980px){
+  .nav-links{
+    position:fixed; top:0; right:0; bottom:0; left:auto;
+    width:min(360px,84vw);
+    height:100dvh;
+    background:var(--ink-2);
+    flex-direction:column; align-items:flex-start; justify-content:center; gap:26px; padding:0 40px;
+    border-left:1px solid var(--steel);
+    box-shadow:-24px 0 60px rgba(0,0,0,.5);
+    overflow-y:auto;
+    transform:translateX(100%);
+    transition:transform .5s var(--ease-in-out), visibility 0s linear .5s;
+    z-index:1100;
+    visibility:hidden;
+  }
+  .nav-links.open{ transform:translateX(0); transition:transform .5s var(--ease-in-out); visibility:visible; }
+  .nav-links a{ font-size:1.1rem; }
+  .nav-toggle{ display:flex; }
+  .nav-cta .btn-ghost{ display:none; }
+}
+
+/* extra-small phones: shrink the nav CTA so logo + toggle + button always fit */
+@media (max-width: 420px){
+  .site-nav{ padding-inline:16px; }
+  .logo{ font-size:1.02rem; }
+  .logo img{ height:26px; }
+  .nav-cta .btn-primary{ padding:11px 16px; font-size:.72rem; }
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+.site-footer{ background:var(--ink-2); border-top:1px solid var(--steel); padding-block:72px 0; position:relative; overflow:hidden; }
+.footer-grid{ display:grid; grid-template-columns:1.3fr .8fr .8fr .8fr 1.05fr; gap:40px; padding-bottom:52px; }
+.footer-brand p{ margin-top:14px; max-width:34ch; }
+.footer-tag{ font-family:var(--f-mono); font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; color:var(--amber); margin-top:10px; }
+.footer-col h4{ position:relative; font-family:var(--f-mono); font-size:.76rem; letter-spacing:.1em; text-transform:uppercase; color:var(--amber); margin-bottom:22px; padding-bottom:12px; }
+.footer-col h4::after{ content:''; position:absolute; left:0; bottom:0; width:22px; height:2px; background:var(--amber); }
+.footer-col a{ display:block; color:var(--text-lo); font-size:.92rem; padding-block:7px; transition:color .3s, transform .3s; }
+.footer-col a:hover{ color:var(--blueprint); }
+.footer-bottom{ display:flex; justify-content:space-between; align-items:center; padding-block:26px; border-top:1px solid var(--steel); font-family:var(--f-mono); font-size:.76rem; color:var(--text-lo-2); flex-wrap:wrap; gap:14px; }
+.footer-social{ display:flex; gap:14px; flex-wrap:wrap; margin-top:20px; }
+.footer-social a{ width:36px; height:36px; border:1px solid var(--steel-2); border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--text-lo); transition:.3s; flex-shrink:0; }
+.footer-social a:hover{ border-color:var(--amber); color:var(--amber); }
+
+.footer-contact-line{ display:flex; align-items:center; gap:10px; color:var(--text-lo); font-size:.88rem; padding-block:7px; transition:color .3s; }
+a.footer-contact-line:hover{ color:var(--blueprint); }
+.footer-contact-line svg{ color:var(--amber); flex-shrink:0; }
+
+.footer-trust{ display:grid; grid-template-columns:1.05fr 1.6fr 1.05fr; gap:36px; align-items:center; padding-block:40px; border-top:1px solid var(--steel); }
+.trust-badge{ display:flex; gap:14px; align-items:flex-start; }
+.trust-badge-icon{ width:52px; height:52px; border:1px solid var(--steel-2); border-radius:12px; display:flex; align-items:center; justify-content:center; color:var(--blueprint); flex-shrink:0; }
+.trust-badge strong{ display:block; margin-bottom:5px; color:var(--text-hi); }
+.trust-badge p{ font-size:.85rem; margin:0; max-width:30ch; }
+
+.footer-stats{ display:grid; grid-template-columns:repeat(4,1fr); gap:18px; }
+.stat-block{ text-align:center; }
+.stat-block svg{ color:var(--amber); margin-bottom:8px; }
+.stat-block strong{ display:block; font-family:var(--f-mono); font-size:1.5rem; color:var(--text-hi); }
+.stat-block span{ display:block; font-size:.74rem; color:var(--text-lo-2); margin-top:4px; }
+
+.footer-bottom-right{ display:flex; align-items:center; gap:10px; }
+.footer-secure{ display:flex; align-items:center; gap:8px; color:var(--text-lo-2); }
+.footer-secure svg{ color:var(--text-lo-2); flex-shrink:0; }
+
+@media (max-width: 980px){
+  .footer-grid{ grid-template-columns:repeat(2,1fr); }
+  .footer-trust{ grid-template-columns:1fr; gap:28px; }
+  .footer-stats{ grid-template-columns:repeat(4,1fr); }
+}
+@media (max-width: 600px){
+  .footer-grid{ grid-template-columns:1fr; }
+  .footer-bottom{ flex-direction:column; align-items:flex-start; }
+  .footer-stats{ grid-template-columns:repeat(2,1fr); }
+}
+
+/* generic reveal helpers targeted by GSAP */
+.reveal{ opacity:0; }
+
+/* =========================================================
+   404 PAGE ONLY
+   ========================================================= */
+.error-section{
+  min-height:100vh; display:flex; align-items:center; padding-block:90px 60px;
+  overflow:hidden; max-width:100%; text-align:center;
+}
+.error-inner{ display:flex; flex-direction:column; align-items:center; }
+
+/* schematic ring behind the glyph */
+.error-ring-wrap{ position:relative; width:min(340px,64vw); aspect-ratio:1/1; margin-bottom:0; }
+.error-ring{ position:absolute; inset:0; width:100%; height:100%; }
+.error-ring .ring-static{ opacity:.35; }
+.error-ring .ring-spin{ transform-origin:150px 150px; animation:spin-slow 18s linear infinite; }
+.error-ring .ring-spin-rev{ transform-origin:150px 150px; animation:spin-slow-rev 26s linear infinite; }
+@keyframes spin-slow{ to{ transform:rotate(360deg); } }
+@keyframes spin-slow-rev{ to{ transform:rotate(-360deg); } }
+
+.error-scan{
+  position:absolute; left:8%; right:8%; height:2px; top:50%;
+  background:linear-gradient(90deg, transparent, var(--blueprint), transparent);
+  filter:drop-shadow(0 0 6px var(--blueprint));
+  animation:scan-move 3.2s ease-in-out infinite;
+}
+@keyframes scan-move{
+  0%,100%{ top:12%; opacity:0; }
+  8%{ opacity:1; }
+  50%{ top:88%; opacity:1; }
+  92%{ opacity:1; }
+}
+
+/* glitching 404 numerals sit centered inside the ring */
+.error-code{
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  font-family:var(--f-display); font-weight:700; letter-spacing:-.02em;
+  font-size:clamp(3.4rem, 11vw, 6.6rem); line-height:1;
+  color:var(--text-hi); user-select:none;
+}
+.error-code span{ position:relative; display:inline-block; }
+.error-code span::before, .error-code span::after{
+  content:'404'; position:absolute; inset:0; background:var(--ink);
+  clip-path:inset(0 0 0 0);
+}
+.error-code span::before{ color:var(--blueprint); left:3px; animation:glitch-1 4.5s infinite linear; }
+.error-code span::after{ color:var(--amber); left:-3px; animation:glitch-2 4.5s infinite linear; }
+@keyframes glitch-1{
+  0%,100%{ clip-path:inset(0 0 95% 0); transform:translate(0,0); }
+  10%{ clip-path:inset(10% 0 60% 0); transform:translate(-3px,1px); }
+  20%{ clip-path:inset(0 0 95% 0); transform:translate(0,0); }
+  55%{ clip-path:inset(70% 0 8% 0); transform:translate(3px,-1px); }
+  60%{ clip-path:inset(0 0 95% 0); transform:translate(0,0); }
+  85%{ clip-path:inset(35% 0 40% 0); transform:translate(-2px,0); }
+  90%{ clip-path:inset(0 0 95% 0); transform:translate(0,0); }
+}
+@keyframes glitch-2{
+  0%,100%{ clip-path:inset(95% 0 0 0); transform:translate(0,0); }
+  12%{ clip-path:inset(20% 0 55% 0); transform:translate(3px,-1px); }
+  24%{ clip-path:inset(95% 0 0 0); transform:translate(0,0); }
+  50%{ clip-path:inset(5% 0 80% 0); transform:translate(-3px,1px); }
+  58%{ clip-path:inset(95% 0 0 0); transform:translate(0,0); }
+  80%{ clip-path:inset(60% 0 15% 0); transform:translate(2px,0); }
+  88%{ clip-path:inset(95% 0 0 0); transform:translate(0,0); }
+}
+
+/* floating blueprint markers around the ring */
+.error-node{
+  position:absolute; width:8px; height:8px; border-radius:50%; background:var(--amber);
+  box-shadow:0 0 0 4px rgba(240,166,58,.16);
+  animation:node-float 4s ease-in-out infinite;
+}
+.error-node.n2{ background:var(--blueprint); box-shadow:0 0 0 4px rgba(88,169,224,.16); animation-delay:.6s; }
+.error-node.n3{ background:var(--ok); box-shadow:0 0 0 4px rgba(98,195,132,.16); animation-delay:1.2s; }
+@keyframes node-float{
+  0%,100%{ transform:translateY(0); }
+  50%{ transform:translateY(-10px); }
+}
+
+.error-eyebrow{ justify-content:center; margin-top:8px; }
+.error-section h1.status{
+  font-size:clamp(1.7rem, 3.4vw, 2.6rem);
+  margin-top:4px;
+}
+.error-section p.lead{
+  margin-inline:auto; margin-top:14px; font-size:1.05rem; max-width:52ch;
+}
+
+.error-readout{
+  margin-top:20px; display:inline-flex; flex-wrap:wrap; justify-content:center; gap:10px 28px;
+  padding:14px 22px; border:1px solid var(--steel); border-radius:999px;
+  background:linear-gradient(180deg, var(--panel), var(--panel-2));
+  font-family:var(--f-mono); font-size:.76rem; letter-spacing:.06em; text-transform:uppercase; color:var(--text-lo-2);
+}
+.error-readout b{ color:var(--danger); }
+.error-readout .dot-ping{ display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--danger); margin-right:8px; animation:ping 1.4s ease-in-out infinite; vertical-align:middle; }
+@keyframes ping{ 0%,100%{ opacity:1; } 50%{ opacity:.25; } }
+
+.error-cta{ display:flex; gap:16px; margin-top:24px; flex-wrap:wrap; justify-content:center; }
+.error-cta .btn svg{ width:16px; height:16px; }
+
+.error-back-links{
+  margin-top:30px; display:flex; flex-wrap:wrap; justify-content:center; gap:10px 8px;
+  font-family:var(--f-mono); font-size:.78rem; color:var(--text-lo-2);
+}
+.error-back-links a{ color:var(--text-lo); transition:color .3s; padding:4px 2px; }
+.error-back-links a:hover{ color:var(--blueprint); }
+.error-back-links span.sep{ color:var(--steel-2); }
+
+@media (max-width:980px){
+  .error-section{ padding-top:110px; }
+}
+@media (max-width:720px){
+  .error-readout{ font-size:.7rem; padding:12px 16px; gap:8px 18px; }
+}
+@media (max-width:600px){
+  .error-section{ padding-top:100px; padding-bottom:50px; }
+  .error-cta{ flex-direction:column; width:100%; align-items:stretch; }
+  .error-cta .btn{ justify-content:center; width:100%; }
+}
+@media (max-width:420px){
+  .error-section{ padding-top:90px; }
+  .error-ring-wrap{ width:min(240px,74vw); }
+  .btn{ padding:13px 22px; font-size:.76rem; }
+  .error-back-links{ font-size:.72rem; }
+}
+/* short/landscape phones: don't let the ring push the buttons off-screen */
+@media (max-height:560px) and (orientation:landscape){
+  .error-section{ min-height:auto; padding-top:100px; }
+  .error-ring-wrap{ width:min(180px,36vh); }
+}
+/* large / 4K desktops */
+@media (min-width:1600px){
+  .error-ring-wrap{ width:400px; }
+}
+</style>
+</head>
+<body>
+
+
+
+<!-- ================= NAV ================= -->
+
+<div class="nav-backdrop" id="navBackdrop"></div>
+
+<main>
+  <section class="error-section">
+    <div class="blueprint-grid"></div>
+    <div class="noise-veil"></div>
+    <div class="wrap error-inner">
+
+      <div class="error-ring-wrap" data-hero>
+        <svg class="error-ring" viewBox="0 0 300 300" fill="none">
+          <circle class="ring-static" cx="150" cy="150" r="118" stroke="#2C3542" stroke-width="1.4"/>
+          <circle class="ring-spin" cx="150" cy="150" r="96" stroke="#58A9E0" stroke-width="1.2" stroke-dasharray="6 10"/>
+          <circle class="ring-spin-rev" cx="150" cy="150" r="132" stroke="#F0A63A" stroke-width="1" stroke-dasharray="2 14" opacity=".6"/>
+          <g class="ring-spin" stroke="#3A4553" stroke-width="1.2">
+            <path d="M150 32 L150 14 M150 268 L150 286 M32 150 L14 150 M268 150 L286 150"/>
+          </g>
+        </svg>
+        <div class="error-scan"></div>
+        <span class="error-node n1" style="top:6%; left:18%;"></span>
+        <span class="error-node n2" style="top:70%; left:8%;"></span>
+        <span class="error-node n3" style="top:82%; left:80%;"></span>
+        <div class="error-code"><span>404</span></div>
+      </div>
+
+      <div class="eyebrow error-eyebrow" data-hero><span class="dot" style="width:7px;height:7px;border-radius:50%;background:var(--danger);box-shadow:0 0 0 4px rgba(226,101,95,.18);"></span>Route Not Found · HTTP 404</div>
+
+      <h1 class="status" data-hero>This part isn't on the routing sheet.</h1>
+      
+
+  
+
+      <div class="error-cta" data-hero>
+        <button type="button" class="btn btn-ghost magnetic" id="goBackBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+          Go Back
+        </button>
+        <a href="index.html" class="btn btn-primary magnetic">
+          Back to Home
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+
+
+    </div>
+  </section>
+</main>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+
+/* ---------------------------------------------------------
+   1. Preloader
+--------------------------------------------------------- */
+window.addEventListener('load', () => {
+  const pre = document.getElementById('preloader');
+  if(!pre){ startPageAnimations(); return; }
+  const bar = pre.querySelector('.pl-bar i');
+  const pct = pre.querySelector('.pl-pct');
+  const counter = { v: 0 };
+  gsap.to(counter, {
+    v: 100, duration: 1, ease:'power2.inOut',
+    onUpdate: () => { bar.style.width = counter.v + '%'; pct.textContent = Math.floor(counter.v) + '%'; },
+    onComplete: () => {
+      gsap.to(pre, { yPercent:-100, duration:.8, ease:'power4.inOut', delay:.1,
+        onComplete: () => { pre.style.display='none'; startPageAnimations(); }
+      });
+    }
+  });
+});
+if(document.readyState === 'complete' && !document.getElementById('preloader')){
+  startPageAnimations();
+}
+
+/* ---------------------------------------------------------
+   2. Nav: scroll state + mobile toggle
+--------------------------------------------------------- */
+const nav = document.querySelector('.site-nav');
+const toggle = document.querySelector('.nav-toggle');
+const navLinks = document.querySelector('.nav-links');
+const navBackdrop = document.getElementById('navBackdrop');
+
+window.addEventListener('scroll', () => {
+  if(!nav) return;
+  nav.classList.toggle('scrolled', window.scrollY > 40);
+}, { passive:true });
+
+function setNavOpen(open){
+  navLinks.classList.toggle('open', open);
+  navBackdrop?.classList.toggle('open', open);
+  document.body.classList.toggle('nav-open', open);
+  const spans = toggle.querySelectorAll('span');
+  gsap.to(spans[0], { rotate: open?45:0, y: open?6:0, duration:.3 });
+  gsap.to(spans[1], { opacity: open?0:1, duration:.2 });
+  gsap.to(spans[2], { rotate: open?-45:0, y: open?-6:0, duration:.3 });
+}
+
+if(toggle){
+  toggle.addEventListener('click', () => {
+    setNavOpen(!navLinks.classList.contains('open'));
+  });
+  navLinks?.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setNavOpen(false)));
+  navBackdrop?.addEventListener('click', () => setNavOpen(false));
+}
+
+/* ---------------------------------------------------------
+   3. Custom cursor
+--------------------------------------------------------- */
+const dot = document.querySelector('.cursor-dot');
+if(dot && matchMedia('(hover:hover) and (pointer:fine)').matches){
+  window.addEventListener('mousemove', e => {
+    gsap.to(dot, { x:e.clientX, y:e.clientY, duration:.05 });
+  });
+}
+
+/* ---------------------------------------------------------
+   4. Magnetic buttons
+--------------------------------------------------------- */
+/* Magnetic hover-follow disabled: buttons stay fixed in place on hover. */
+
+/* ---------------------------------------------------------
+   5. Entrance animation for the 404 stage
+--------------------------------------------------------- */
+function startPageAnimations(){
+  gsap.utils.toArray('[data-hero]').forEach((el,i)=>{
+    gsap.fromTo(el, { opacity:0, y:26 }, { opacity:1, y:0, duration:1, ease:'power3.out', delay:.25 + i*0.12 });
+  });
+
+  const ringWrap = document.querySelector('.error-ring-wrap');
+  if(ringWrap){
+    gsap.fromTo(ringWrap, { opacity:0, scale:.8, rotate:-6 }, { opacity:1, scale:1, rotate:0, duration:1.1, ease:'back.out(1.6)' });
+  }
+}
+
+/* ---------------------------------------------------------
+   6. Go Back button — uses browser history
+--------------------------------------------------------- */
+const goBackBtn = document.getElementById('goBackBtn');
+if(goBackBtn){
+  goBackBtn.addEventListener('click', () => {
+    if(window.history.length > 1){
+      window.history.back();
+    } else {
+      window.location.href = 'index.html';
+    }
+  });
+}
+
+</script>
+</body>
+</html>

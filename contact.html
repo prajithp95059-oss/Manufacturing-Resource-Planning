@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — Stackly MRP</title>
+<meta name="description" content="Talk to Stackly about scheduling a demo, pricing, support or careers.">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+:root{
+  /* palette */
+  --ink:        #10131A;
+  --ink-2:      #171B23;
+  --panel:      #1A2029;
+  --panel-2:    #202834;
+  --steel:      #2C3542;
+  --steel-2:    #3A4553;
+  --paper:      #F3F0E8;
+  --paper-2:    #EAE5D8;
+  --blueprint:  #58A9E0;
+  --blueprint-2:#3D7FB0;
+  --amber:      #F0A63A;
+  --amber-2:    #D68C1F;
+  --text-hi:    #EDEFF2;
+  --text-lo:    #93A0AD;
+  --text-lo-2:  #6C7683;
+  --ok:         #62C384;
+  --danger:     #E2645F;
+
+  /* type */
+  --f-display: 'Space Grotesk', sans-serif;
+  --f-body: 'Inter', sans-serif;
+  --f-mono: 'IBM Plex Mono', monospace;
+
+  /* layout */
+  --maxw: 1500px;
+  --pad: clamp(20px, 5vw, 64px);
+  --radius: 14px;
+  --radius-sm: 8px;
+
+  --ease-out: cubic-bezier(.16,.84,.44,1);
+  --ease-in-out: cubic-bezier(.65,0,.35,1);
+}
+
+*,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
+html{ scroll-behavior:smooth; }
+html,body{ background:var(--ink); color:var(--text-hi); }
+body.nav-open{ overflow:hidden; }
+body{
+  font-family:var(--f-body);
+  font-size:16px;
+  line-height:1.6;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+img{ max-width:100%; display:block; }
+a{ color:inherit; text-decoration:none; }
+ul{ list-style:none; }
+button{ font-family:inherit; cursor:pointer; border:none; background:none; color:inherit; }
+input,textarea,select{ font-family:inherit; font-size:inherit; color:inherit; }
+svg{ display:block; }
+
+::selection{ background:var(--blueprint); color:var(--ink); }
+
+@media (prefers-reduced-motion: reduce){
+  *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important; }
+}
+
+/* focus visibility */
+a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible{
+  outline:2px solid var(--blueprint);
+  outline-offset:3px;
+  border-radius:4px;
+}
+
+/* ---------- typography ---------- */
+h1,h2,h3,h4{ font-family:var(--f-display); font-weight:600; line-height:1.08; letter-spacing:-0.01em; color:var(--text-hi); }
+h1{ font-size:clamp(2.6rem, 6vw, 5.2rem); }
+h2{ font-size:clamp(2rem, 4.2vw, 3.4rem); }
+h3{ font-size:clamp(1.3rem, 2.2vw, 1.8rem); }
+p{ color:var(--text-lo); max-width:60ch; }
+.mono{ font-family:var(--f-mono); letter-spacing:.02em; }
+
+.eyebrow{
+  display:inline-flex; align-items:center; gap:10px;
+  font-family:var(--f-mono); font-size:.78rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--blueprint); margin-bottom:18px;
+}
+.eyebrow::before{ content:''; width:22px; height:1px; background:var(--blueprint); }
+
+.section-tag{ color:var(--amber); }
+
+/* ---------- layout helpers ---------- */
+.wrap{ max-width:var(--maxw); margin-inline:auto; padding-inline:var(--pad); }
+section{ position:relative; padding-block: clamp(64px, 10vw, 140px); }
+.grid{ display:grid; gap:24px; }
+.g-2{ grid-template-columns:repeat(2,1fr); }
+.g-3{ grid-template-columns:repeat(3,1fr); }
+.g-4{ grid-template-columns:repeat(4,1fr); }
+
+.btn{
+  display:inline-flex; align-items:center; gap:10px;
+  font-family:var(--f-mono); font-size:.82rem; letter-spacing:.06em; text-transform:uppercase;
+  padding:15px 28px; border-radius:999px; white-space:nowrap;
+  transition:transform .4s var(--ease-out), background .3s, color .3s, border-color .3s, box-shadow .3s;
+}
+.btn-primary{ background:var(--amber); color:#1A1204; font-weight:600; }
+.btn-primary:hover{ box-shadow:0 14px 30px -10px rgba(240,166,58,.55); }
+.btn-primary.nav-login-desktop, .btn-primary.nav-login-mobile{ color:#fff; }
+.btn-ghost{ border:1px solid var(--steel-2); color:var(--text-hi); }
+.btn-ghost:hover{ border-color:var(--blueprint); color:var(--blueprint); }
+.btn-block{ width:100%; justify-content:center; }
+.btn svg{ width:15px; height:15px; }
+
+.card{
+  background:linear-gradient(180deg, var(--panel), var(--panel-2));
+  border:1px solid var(--steel);
+  border-radius:var(--radius);
+  padding:32px;
+  position:relative;
+  overflow:hidden;
+}
+.card::after{
+  content:''; position:absolute; inset:0; padding:1px; border-radius:inherit;
+  background:linear-gradient(140deg, rgba(88,169,224,.35), transparent 40%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none;
+}
+
+.stat{ font-family:var(--f-display); font-size:clamp(2.2rem,4vw,3.4rem); color:var(--text-hi); }
+.stat small{ display:block; font-family:var(--f-mono); font-size:.72rem; letter-spacing:.1em; text-transform:uppercase; color:var(--text-lo-2); margin-top:6px; }
+
+/* ---------- background texture ---------- */
+.blueprint-grid{
+  position:absolute; inset:0; pointer-events:none;
+  background-image:
+    linear-gradient(rgba(88,169,224,.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(88,169,224,.08) 1px, transparent 1px);
+  background-size:56px 56px;
+  mask-image:radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 100%);
+}
+.noise-veil{ position:absolute; inset:0; pointer-events:none; background:radial-gradient(ellipse 60% 50% at 50% -10%, rgba(88,169,224,.14), transparent 60%); }
+
+/* ---------- preloader ---------- */
+#preloader{
+  position:fixed; inset:0; z-index:9999; background:var(--ink);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px;
+}
+#preloader .pl-logo{ font-family:var(--f-display); font-size:1.4rem; letter-spacing:.04em; display:flex; align-items:center; gap:10px;}
+#preloader .pl-logo span{ color:var(--amber); }
+#preloader .pl-bar{ width:min(280px,60vw); height:2px; background:var(--steel); position:relative; overflow:hidden; }
+#preloader .pl-bar i{ position:absolute; inset:0; width:0%; background:var(--blueprint); }
+#preloader .pl-pct{ font-family:var(--f-mono); font-size:.75rem; color:var(--text-lo); letter-spacing:.1em; }
+
+/* ---------- custom cursor dot (desktop only) ---------- */
+.cursor-dot{ position:fixed; top:0; left:0; width:8px; height:8px; border-radius:50%; background:var(--amber); pointer-events:none; z-index:9998; transform:translate(-50%,-50%); mix-blend-mode:difference; display:none; }
+@media (hover:hover) and (pointer:fine){ .cursor-dot{ display:block; } }
+
+/* =========================================================
+   NAV
+   ========================================================= */
+.site-nav{
+  position:fixed; top:0; left:0; right:0; z-index:1000;
+  display:grid; grid-template-columns:auto 1fr auto; align-items:center;
+  padding:20px; padding-inline:max(var(--pad), calc((100% - var(--maxw)) / 2 + var(--pad)));
+  background:rgba(16,19,26,0);
+  border-bottom:1px solid transparent;
+  transition:background .4s, border-color .4s, padding .4s;
+  width:100%;
+  max-width:100vw;
+}
+.site-nav.scrolled{ background:rgba(16,19,26,.86); backdrop-filter:blur(14px); border-color:var(--steel); padding-block:14px; }
+.logo{ display:flex; align-items:center; gap:10px; font-family:var(--f-display); font-size:1.2rem; font-weight:700; letter-spacing:.01em; }
+.logo img{ height:70px; width:auto; }
+.nav-links{ display:flex; align-items:center; justify-content:center; gap:36px; }
+.nav-links a{
+  position:relative; font-family:var(--f-mono); font-size:.82rem; letter-spacing:.04em; text-transform:uppercase; color:var(--text-lo);
+  padding-block:4px; transition:color .3s;
+}
+.nav-links a::after{ content:''; position:absolute; left:0; bottom:0; width:0; height:1px; background:var(--amber); transition:width .3s var(--ease-out); }
+.nav-links a:hover, .nav-links a.active{ color:var(--text-hi); }
+.nav-links a.nav-login-mobile{ display:none; }
+.nav-links a:hover::after, .nav-links a.active::after{ width:100%; }
+.nav-cta{ display:flex; align-items:center; gap:16px; flex-shrink:0; justify-self:end; }
+.nav-toggle{ display:none; flex-direction:column; gap:5px; width:26px; z-index:1200; flex-shrink:0; }
+.nav-toggle span{ height:2px; background:var(--text-hi); border-radius:2px; transition:transform .35s var(--ease-out), opacity .3s; }
+
+/* mobile nav backdrop */
+.nav-backdrop{
+  position:fixed; inset:0; background:rgba(8,10,14,.55); backdrop-filter:blur(2px);
+  opacity:0; visibility:hidden; transition:opacity .4s var(--ease-in-out), visibility 0s linear .4s;
+  z-index:900;
+}
+.nav-backdrop.open{ opacity:1; visibility:visible; transition:opacity .4s var(--ease-in-out); }
+
+/* mobile nav */
+@media (max-width: 980px){
+  .site-nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+  .nav-links{
+    position:fixed; top:0; right:0; bottom:0; left:auto;
+    width:min(360px,84vw);
+    height:100dvh;
+    background:var(--ink-2);
+    flex-direction:column; align-items:flex-start; justify-content:center; gap:26px; padding:0 40px;
+    border-left:1px solid var(--steel);
+    box-shadow:-24px 0 60px rgba(0,0,0,.5);
+    overflow-y:auto;
+    transform:translateX(100%);
+    transition:transform .5s var(--ease-in-out), visibility 0s linear .5s;
+    z-index:1100;
+    visibility:hidden;
+  }
+  .nav-links.open{ transform:translateX(0); transition:transform .5s var(--ease-in-out); visibility:visible; }
+  .nav-links a{ font-size:1.1rem; }
+  .nav-toggle{ display:flex; }
+  .nav-cta{ justify-self:auto; margin-left:auto; }
+  .nav-cta .btn-ghost{ display:none; }
+  .nav-cta .nav-login-desktop{ display:none; }
+  .nav-links a.nav-login-mobile{ display:inline-flex; align-items:center; justify-content:center; margin-top:8px; }
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+.site-footer{ background:var(--ink-2); border-top:1px solid var(--steel); padding-block:72px 0; position:relative; overflow:hidden; }
+.footer-grid{ display:grid; grid-template-columns:1.3fr .8fr .8fr .8fr 1.05fr; gap:40px; padding-bottom:52px; }
+.footer-brand p{ margin-top:14px; max-width:34ch; }
+.footer-tag{ font-family:var(--f-mono); font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; color:var(--amber); margin-top:10px; }
+.footer-col h4{ position:relative; font-family:var(--f-mono); font-size:.76rem; letter-spacing:.1em; text-transform:uppercase; color:var(--amber); margin-bottom:22px; padding-bottom:12px; }
+.footer-col h4::after{ content:''; position:absolute; left:0; bottom:0; width:22px; height:2px; background:var(--amber); }
+.footer-col a{ display:block; color:var(--text-lo); font-size:.92rem; padding-block:7px; transition:color .3s, transform .3s; }
+.footer-col a:hover{ color:var(--blueprint); }
+.footer-bottom{ display:flex; justify-content:space-between; align-items:center; padding-block:26px; border-top:1px solid var(--steel); font-family:var(--f-mono); font-size:.76rem; color:var(--text-lo-2); flex-wrap:wrap; gap:14px; }
+.footer-social{ display:flex; gap:14px; flex-wrap:wrap; margin-top:20px; }
+.footer-social a{ width:36px; height:36px; border:1px solid var(--steel-2); border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--text-lo); transition:.3s; flex-shrink:0; }
+.footer-social a:hover{ border-color:var(--amber); color:var(--amber); }
+
+.footer-contact-line{ display:flex; align-items:center; gap:10px; color:var(--text-lo); font-size:.88rem; padding-block:7px; transition:color .3s; }
+a.footer-contact-line:hover{ color:var(--blueprint); }
+.footer-contact-line svg{ color:var(--amber); flex-shrink:0; }
+
+.footer-highlight{ display:flex; gap:14px; margin-top:20px; padding:18px; border:1px solid var(--steel); border-radius:12px; background:linear-gradient(180deg, var(--panel), var(--panel-2)); }
+.footer-highlight-icon{ width:42px; height:42px; border-radius:9px; background:rgba(240,166,58,.12); color:var(--amber); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.footer-highlight strong{ display:block; font-size:.94rem; line-height:1.35; color:var(--text-hi); margin-bottom:6px; }
+.footer-highlight p{ font-size:.8rem; margin:0 0 10px; }
+.footer-highlight-link{ display:inline-flex; align-items:center; gap:6px; color:var(--amber); font-size:.82rem; font-weight:600; transition:gap .3s; }
+.footer-highlight-link:hover{ gap:10px; }
+
+.footer-trust{ display:grid; grid-template-columns:1.05fr 1.6fr 1.05fr; gap:36px; align-items:center; padding-block:40px; border-top:1px solid var(--steel); }
+.trust-badge{ display:flex; gap:14px; align-items:flex-start; }
+.trust-badge-icon{ width:52px; height:52px; border:1px solid var(--steel-2); border-radius:12px; display:flex; align-items:center; justify-content:center; color:var(--blueprint); flex-shrink:0; }
+.trust-badge strong{ display:block; margin-bottom:5px; color:var(--text-hi); }
+.trust-badge p{ font-size:.85rem; margin:0; max-width:30ch; }
+
+.footer-stats{ display:grid; grid-template-columns:repeat(4,1fr); gap:18px; }
+.stat-block{ text-align:center; }
+.stat-block svg{ color:var(--amber); margin-bottom:8px; }
+.stat-block strong{ display:block; font-family:var(--f-mono); font-size:1.5rem; color:var(--text-hi); }
+.stat-block span{ display:block; font-size:.74rem; color:var(--text-lo-2); margin-top:4px; }
+
+.footer-newsletter h4{ font-family:var(--f-mono); font-size:.76rem; letter-spacing:.1em; text-transform:uppercase; color:var(--amber); margin-bottom:10px; }
+.footer-newsletter p{ font-size:.84rem; margin-bottom:14px; }
+.footer-newsletter-form{ display:flex; gap:8px; flex-wrap:wrap; }
+.footer-newsletter-input{ flex:1 1 160px; min-width:0; background:var(--panel); border:1px solid var(--steel-2); border-radius:8px; padding:10px 12px; font-size:.85rem; color:var(--text-hi); }
+.footer-newsletter-input:focus{ outline:none; border-color:var(--amber); }
+.footer-newsletter-btn{ flex-shrink:0; padding:10px 16px; white-space:nowrap; }
+
+/* Newsletter toast */
+.newsletter-toast{
+  position:fixed; left:50%; bottom:28px; transform:translate(-50%, 16px);
+  display:flex; align-items:center; gap:12px; max-width:min(360px, calc(100vw - 32px));
+  background:var(--panel-2); border:1px solid var(--steel-2); border-radius:12px;
+  padding:14px 18px; box-shadow:0 12px 32px rgba(0,0,0,.4);
+  opacity:0; pointer-events:none; transition:opacity .35s ease, transform .35s ease;
+  z-index:10000;
+}
+.newsletter-toast.show{ opacity:1; transform:translate(-50%, 0); }
+.newsletter-toast-icon{ width:30px; height:30px; border-radius:50%; background:rgba(240,166,58,.15); color:var(--amber); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.newsletter-toast-text strong{ display:block; font-size:.86rem; color:var(--text-hi); margin-bottom:2px; }
+.newsletter-toast-text span{ display:block; font-size:.78rem; color:var(--text-lo); }
+
+.footer-bottom-right{ display:flex; align-items:center; gap:10px; }
+.footer-secure{ display:flex; align-items:center; gap:8px; color:var(--text-lo-2); }
+.footer-legal-links{ display:flex; align-items:center; gap:22px; }
+.footer-legal-links a{ font-family:var(--f-mono); font-size:.78rem; color:var(--text-lo-2); transition:color .3s; }
+.footer-legal-links a:hover{ color:var(--blueprint); }
+.footer-secure svg{ color:var(--text-lo-2); flex-shrink:0; }
+
+@media (max-width: 980px){
+  .footer-grid{ grid-template-columns:repeat(2,1fr); }
+  .footer-trust{ grid-template-columns:1fr; gap:28px; }
+  .footer-stats{ grid-template-columns:repeat(4,1fr); }
+}
+@media (max-width: 600px){
+  .footer-grid{ grid-template-columns:1fr; }
+  .footer-bottom{ flex-direction:column; align-items:flex-start; }
+  .footer-stats{ grid-template-columns:repeat(2,1fr); }
+
+  .footer-newsletter{ max-width:340px; }
+  .footer-newsletter-form{ flex-direction:column; gap:10px; }
+  .footer-newsletter-input{
+    flex:none;
+    width:100%;
+    padding:9px 12px;
+    font-size:.82rem;
+  }
+  .footer-newsletter-btn{
+    flex:none;
+    width:100%;
+    padding:9px 14px;
+    font-size:.72rem;
+     justify-content:center;
+  }
+
+  .newsletter-toast{ bottom:16px; max-width:calc(100vw - 24px); padding:10px 16px; }
+}
+
+/* =========================================================
+   MARQUEE / TICKER (signature element)
+   ========================================================= */
+.ticker{
+  border-top:1px solid var(--steel); border-bottom:1px solid var(--steel);
+  background:var(--ink-2); overflow:hidden; padding-block:14px;
+}
+.ticker-track{ display:flex; gap:56px; width:max-content; white-space:nowrap; }
+.ticker-track span{ font-family:var(--f-mono); font-size:.82rem; letter-spacing:.05em; color:var(--text-lo); display:flex; align-items:center; gap:10px; }
+.ticker-track span b{ color:var(--amber); }
+.ticker-track span::before{ content:'◆'; color:var(--blueprint); font-size:.6rem; }
+
+/* =========================================================
+   RESPONSIVE GRID COLLAPSES (shared across pages)
+   ========================================================= */
+@media (max-width: 1100px){ .g-4{ grid-template-columns:repeat(2,1fr); } .g-3{ grid-template-columns:repeat(2,1fr);} }
+@media (max-width: 720px){ .g-2,.g-3,.g-4{ grid-template-columns:1fr; } }
+
+/* generic reveal helpers targeted by GSAP */
+.reveal{ opacity:0; }
+.split-line{ overflow:hidden; }
+
+  .contact-hero{ padding-top:150px; padding-bottom:60px; overflow-x:hidden; }
+  .contact-split{ display:grid; grid-template-columns:.95fr 1.05fr; gap:56px; align-items:stretch; }
+  .contact-split > .reveal{ display:flex; flex-direction:column; height:100%; }
+
+.contact-form-card{ padding:44px; min-width:0; }
+.form-row{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:16px; margin-bottom:16px; }
+.field{ display:flex; flex-direction:column; gap:8px; min-width:0; }
+  .field label{ font-family:var(--f-mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-lo-2); }
+  .field input, .field select, .field textarea{ width:100%; background:var(--ink); border:1px solid var(--steel-2); border-radius:10px; padding:13px 15px; font-size:.92rem; transition:border-color .3s; }
+  .field input:focus, .field select:focus, .field textarea:focus{ border-color:var(--blueprint); outline:none; }
+  .field textarea{ resize:vertical; min-height:110px; }
+  .field.full{ grid-column:1/-1; }
+  .field .field-error{ display:none; font-family:var(--f-mono); font-size:.72rem; color:var(--danger); margin-top:2px; }
+  .field.has-error input, .field.has-error select, .field.has-error textarea{ border-color:var(--danger); }
+  .field.has-error .field-error{ display:block; }
+
+  .contact-info-list{ display:flex; flex-direction:column; gap:0; margin-top:32px; }
+.info-item{ display:flex; gap:18px; padding-block:22px; border-top:1px solid var(--steel); min-width:0; }
+.info-item svg{ width:22px; height:22px; color:var(--blueprint); flex-shrink:0; margin-top:2px; }
+.info-item > div{ min-width:0; }
+./404.html
+  .info-item b{ display:block; font-size:.95rem; }
+  .info-item span{ font-family:var(--f-mono); font-size:.82rem; color:var(--text-lo); word-break:break-word; }
+
+  .office-media{ margin-top:32px; border-radius:16px; overflow:hidden; flex:1 1 auto; min-height:220px; }
+  .office-media img{ width:100%; height:100%; object-fit:cover; }
+
+  .map-band{ margin-top:80px; border-radius:20px; overflow:hidden; position:relative; aspect-ratio:21/7; border:1px solid var(--steel); width:100%; max-width:100%; }
+  .map-band iframe{ width:100%; height:100%; max-width:100%; border:0; display:block; }
+
+  .support-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+  .support-card svg{ width:26px; height:26px; color:var(--amber); margin-bottom:16px; }
+
+  @media (max-width: 600px){
+  .form-row{ grid-template-columns: 1fr; }
+  .contact-form-card{ padding:26px; }
+  .contact-hero{ padding-top:120px; }
+  .map-band{ margin-top:48px; aspect-ratio:4/5; border-radius:16px; }
+}
+
+@media (max-width:980px){
+  .contact-split{ grid-template-columns:1fr; align-items:initial; }
+  .contact-split > .reveal{ height:auto; min-width:0; }
+  .office-media{ flex:none; aspect-ratio:16/10; }
+  .form-row{ grid-template-columns:minmax(0,1fr); }
+  .support-grid{ grid-template-columns:1fr; }
+  .map-band{ aspect-ratio:16/12; margin-top:56px; }
+}
+
+  /* =========================================================
+     CUSTOM SELECT (replaces native <select> so the open
+     options list stays contained within the form card /
+     viewport instead of the OS-rendered dropdown overflowing)
+     ========================================================= */
+  .custom-select{ position:relative; min-width:0; }
+  .cs-trigger{
+    width:100%; display:flex; align-items:center; justify-content:space-between; gap:10px;
+    background:var(--ink); border:1px solid var(--steel-2); border-radius:10px;
+    padding:13px 15px; font-size:.92rem; text-align:left; color:var(--text-hi);
+    transition:border-color .3s;
+  }
+  .cs-trigger:hover{ border-color:var(--steel-2); }
+  .custom-select.open .cs-trigger,
+  .cs-trigger:focus-visible{ border-color:var(--blueprint); outline:none; }
+  .cs-trigger svg{ width:14px; height:14px; flex-shrink:0; color:var(--text-lo-2); transition:transform .3s var(--ease-out); }
+  .custom-select.open .cs-trigger svg{ transform:rotate(180deg); }
+
+  .cs-options{
+    position:absolute; left:0; right:0; top:calc(100% + 8px);
+    background:var(--panel-2); border:1px solid var(--steel-2); border-radius:10px;
+    box-shadow:0 20px 44px -12px rgba(0,0,0,.6);
+    max-height:216px; overflow-y:auto; overscroll-behavior:contain;
+    padding:6px; z-index:60;
+    opacity:0; transform:translateY(-6px); pointer-events:none;
+    transition:opacity .2s var(--ease-out), transform .2s var(--ease-out);
+  }
+  .custom-select.open .cs-options{ opacity:1; transform:translateY(0); pointer-events:auto; }
+  .custom-select.drop-up .cs-options{ top:auto; bottom:calc(100% + 8px); transform:translateY(6px); }
+  .custom-select.open.drop-up .cs-options{ transform:translateY(0); }
+
+  .cs-option{
+    padding:11px 12px; font-size:.9rem; border-radius:7px; cursor:pointer; color:var(--text-hi);
+    transition:background .15s, color .15s;
+  }
+  .cs-option:hover, .cs-option.active{ background:var(--steel); }
+  .cs-option[aria-selected="true"]{ color:var(--blueprint); }
+
+  .cs-options::-webkit-scrollbar{ width:8px; }
+  .cs-options::-webkit-scrollbar-thumb{ background:var(--steel-2); border-radius:8px; }
+  .footer-col .footer-contact-line{
+  display:flex; align-items:center; gap:10px;
+  color:var(--text-lo); font-size:.88rem; padding-block:7px;
+  transition:color .3s;
+}
+</style>
+</head>
+<body>
+
+
+<header class="site-nav">
+  <a href="index.html" class="logo"><img src="./stackly.webp" alt="Stackly"></a>
+  <nav class="nav-links" id="navLinks">
+    <a href="index.html" >Home</a>
+    <a href="about.html">About</a>
+    <a href="services.html">Services</a>
+    <a href="resources.html">Resources</a>
+    <a href="blog.html">Blog</a>
+    <a href="contact.html" class="active">Contact</a>
+    <a href="login.html" class="btn btn-primary magnetic nav-login-mobile">Login</a>
+  </nav>
+  <div class="nav-cta">
+    <a href="login.html" class="btn btn-primary magnetic nav-login-desktop">Login</a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+<div class="nav-backdrop" id="navBackdrop"></div>
+
+<main>
+  <section class="contact-hero">
+    <div class="blueprint-grid"></div>
+    <div class="wrap">
+      <div class="eyebrow">Get in touch</div>
+      <h1 data-split="words">Let's look at your floor.</h1>
+      <p class="lead" data-hero style="margin-top:16px; max-width:52ch;">Whether you're comparing MRP platforms or ready to schedule an implementation, tell us where you are — we'll route you to the right person within one business day.</p>
+
+      <div class="contact-split" style="margin-top:64px;">
+        <div class="reveal">
+          <h3>Reach us directly</h3>
+          <div class="contact-info-list">
+            <div class="info-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4h16v16H4z"/><path d="M4 6l8 7 8-7"/></svg>
+              <div><b>Sales</b><span> sales@stacklymrp.com</span></div>
+            </div>
+            <div class="info-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3 19.5 19.5 0 01-6-6A19.8 19.8 0 012.1 4.2 2 2 0 014.1 2h3a2 2 0 012 1.7c.1.9.3 1.8.6 2.7a2 2 0 01-.5 2.1L8 9.7a16 16 0 006 6l1.2-1.2a2 2 0 012.1-.5c.9.3 1.8.5 2.7.6a2 2 0 011.7 2z"/></svg>
+              <div><b>Support</b><span> +91 44 6789 0123</span></div>
+            </div>
+            <div class="info-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s-7-5.3-7-11a7 7 0 0114 0c0 5.7-7 11-7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>
+              <div><b>Headquarters</b><span> Chennai, Tamil Nadu, India</span></div>
+            </div>
+            <div class="info-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+              <div><b>Hours</b><span> Mon–Fri, 9:00–18:00 IST</span></div>
+            </div>
+          </div>
+          <div class="office-media reveal">
+            <img src="./assets/contact.webp" alt="Modern office workspace">
+          </div>
+        </div>
+
+        <form class="card contact-form-card reveal" id="contactForm" novalidate>
+          <h3>Tell us about your plant</h3>
+          <div class="form-row" style="margin-top:26px;">
+            <div class="field" data-field="firstName">
+              <label>First name</label>
+              <input type="text" name="firstName" required pattern="[A-Za-z\s'-]+" title="Letters only" autocomplete="given-name">
+              <span class="field-error">Letters only, please.</span>
+            </div>
+            <div class="field" data-field="lastName">
+              <label>Last name</label>
+              <input type="text" name="lastName" required pattern="[A-Za-z\s'-]+" title="Letters only" autocomplete="family-name">
+              <span class="field-error">Letters only, please.</span>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="field" data-field="email">
+              <label>Work email</label>
+              <input type="email" name="email" required autocomplete="email">
+              <span class="field-error">Enter a valid email address.</span>
+            </div>
+            <div class="field" data-field="phone">
+              <label>Phone</label>
+              <input type="tel" name="phone" inputmode="numeric" pattern="[0-9]+" title="Numbers only" autocomplete="tel">
+              <span class="field-error">Numbers only, please.</span>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="field full" data-field="company">
+              <label>Company</label>
+              <input type="text" name="company" required pattern="[A-Za-z0-9\s'&.-]+" title="Letters only" autocomplete="organization">
+              <span class="field-error">Letters only, please.</span>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="field">
+              <label>Plant type</label>
+              <div class="custom-select" data-custom-select>
+                <button type="button" class="cs-trigger" aria-haspopup="listbox" aria-expanded="false">
+                  <span class="cs-trigger-label">Discrete assembly</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+                </button>
+                <ul class="cs-options" role="listbox" tabindex="-1">
+                  <li class="cs-option" role="option" aria-selected="true">Discrete assembly</li>
+                  <li class="cs-option" role="option" aria-selected="false">Process manufacturing</li>
+                  <li class="cs-option" role="option" aria-selected="false">Precision machining</li>
+                  <li class="cs-option" role="option" aria-selected="false">Mixed-mode</li>
+                </ul>
+                <select name="plant-type" hidden required>
+                  <option>Discrete assembly</option>
+                  <option>Process manufacturing</option>
+                  <option>Precision machining</option>
+                  <option>Mixed-mode</option>
+                </select>
+              </div>
+            </div>
+            <div class="field">
+              <label>Number of plants</label>
+              <div class="custom-select" data-custom-select>
+                <button type="button" class="cs-trigger" aria-haspopup="listbox" aria-expanded="false">
+                  <span class="cs-trigger-label">1</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+                </button>
+                <ul class="cs-options" role="listbox" tabindex="-1">
+                  <li class="cs-option" role="option" aria-selected="true">1</li>
+                  <li class="cs-option" role="option" aria-selected="false">2–5</li>
+                  <li class="cs-option" role="option" aria-selected="false">6–20</li>
+                  <li class="cs-option" role="option" aria-selected="false">20+</li>
+                </ul>
+                <select name="plant-count" hidden required>
+                  <option>1</option>
+                  <option>2–5</option>
+                  <option>6–20</option>
+                  <option>20+</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="field full"><label>What are you hoping to solve?</label><textarea placeholder="Tell us about your current scheduling, procurement or traceability challenges…" name="message"></textarea></div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block magnetic" style="margin-top:8px;">Send Message →</button>
+        </form>
+      </div>
+
+      <!-- MAP -->
+      <div class="map-band reveal">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3907.1616097152896!2d78.1739798!3d11.682956599999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3babefef7fd970bb%3A0xe11aef1a71994f9!2sStackly!5e0!3m2!1sen!2sin!4v1788348351705!5m2!1sen!2sin" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-bottom:120px;">
+    <div class="wrap">
+      <div class="eyebrow reveal">Not ready to talk?</div>
+      <h2 class="reveal">Three other ways in.</h2>
+      <div class="grid support-grid reveal-group" style="margin-top:36px;">
+        <div class="card support-card">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 8h18"/></svg>
+          <h3>Watch a recorded demo</h3>
+          <p style="margin-top:10px">See the planning-to-shop-floor loop in twelve minutes, no meeting required.</p>
+          <a href="./404.html" class="btn btn-ghost magnetic" style="margin-top:20px;">Watch Now →</a>
+        </div>
+        <div class="card support-card">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 19h16M4 15l4-6 4 3 4-8 4 5"/></svg>
+          <h3>Read the case studies</h3>
+          <p style="margin-top:10px">See what changed for teams already running Stackly on their floor.</p>
+          <a href="./404.html" class="btn btn-ghost magnetic" style="margin-top:20px;">Browse Results →</a>
+        </div>
+        <div class="card support-card">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+          <h3>Explore the docs</h3>
+          <p style="margin-top:10px">API reference, integration guides and everything an admin needs.</p>
+          <a href="./404.html" class="btn btn-ghost magnetic" style="margin-top:20px;">Read Docs →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="logo"><img src="./stackly.webp" alt="Stackly"></a>
+        <p class="footer-tag">Plan. Build. Ship.</p>
+        <p>Manufacturing resource planning built around how work actually moves through your plant — from plan to shipped part.</p>
+        <div class="footer-social">
+          <a href="./404.html" aria-label="LinkedIn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V8.98h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.31zM5.32 7.42a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM3.54 20.45h3.56V8.98H3.54v11.47z"/>
+            </svg>
+          </a>
+          <a href="./404.html" aria-label="X">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18.9 2H22l-6.77 7.74L23.2 22h-6.24l-4.89-6.39L6.48 22H3.36l7.24-8.28L2.8 2h6.4l4.42 5.84L18.9 2zm-1.1 17.9h1.73L8.29 4.02H6.43L17.8 19.9z"/>
+            </svg>
+          </a>
+          <a href="./404.html" aria-label="YouTube">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M23.5 6.2a3 3 0 0 0-2.1-2.12C19.55 3.5 12 3.5 12 3.5s-7.55 0-9.4.58A3 3 0 0 0 .5 6.2 31.5 31.5 0 0 0 0 12a31.5 31.5 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.12c1.85.58 9.4.58 9.4.58s7.55 0 9.4-.58a3 3 0 0 0 2.1-2.12A31.5 31.5 0 0 0 24 12a31.5 31.5 0 0 0-.5-5.8zM9.6 15.9V8.1l6.4 3.9-6.4 3.9z"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Quick links</h4>
+    <a href="index.html" class="active">Home</a>
+    <a href="about.html">About</a>
+    <a href="services.html">Services</a>
+    <a href="resources.html">Resources</a>
+    <a href="blog.html">Blog</a>
+    <a href="contact.html">Contact</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Resources</h4>
+        <a href="./404.html">Resource Center</a>
+        <a href="./404.html">Blog</a>
+        <a href="./404.html">Guides</a>
+        <a href="./404.html">Help Center</a>
+        <a href="./404.html">FAQ</a>
+        <a href="./404.html">Community</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="./404.html">Our Story</a>
+        <a href="./404.html">Careers</a>
+        <a href="./404.html">Partners</a>
+        <a href="./404.html">Press &amp; Media</a>
+        <a href="./404.html">Terms of Service</a>
+        <a href="./404.html">Privacy Policy</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Get In Touch</h4>
+        <a class="footer-contact-line" href="./404.html">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+          hello@stacklymrp.com
+        </a>
+        <a class="footer-contact-line" href="./404.html">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.11 4.18 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.72c.12.9.33 1.77.63 2.61a2 2 0 0 1-.45 2.11L8.09 9.63a16 16 0 0 0 6.28 6.28l1.19-1.19a2 2 0 0 1 2.11-.45c.84.3 1.71.51 2.61.63A2 2 0 0 1 22 16.92z"/></svg>
+          +91 98765 43210
+        </a>
+        <span class="footer-contact-line">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Salem, Tamil Nadu, India
+        </span>
+      </div>
+    </div>
+
+    <div class="footer-trust">
+      <div class="trust-badge">
+        <div class="trust-badge-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l8 4v5c0 5.25-3.4 9.74-8 11-4.6-1.26-8-5.75-8-11V6l8-4z"/><polyline points="9 12 11 14 15 10"/></svg>
+        </div>
+        <div>
+          <strong>Trusted on the Shop Floor</strong>
+          <p>Real-time plant data. Audit-ready records. Built for uptime.</p>
+        </div>
+      </div>
+
+      <div class="footer-stats">
+        <div class="stat-block">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          <strong>500+</strong>
+          <span>Plants Running Stackly</span>
+        </div>
+        <div class="stat-block">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="4" width="16" height="18" rx="2"/><path d="M9 2h6a1 1 0 0 1 1 1v2H8V3a1 1 0 0 1 1-1z"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="16" y2="16"/></svg>
+          <strong>12M+</strong>
+          <span>Work Orders Tracked</span>
+        </div>
+        <div class="stat-block">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          <strong>99.9%</strong>
+          <span>Platform Uptime</span>
+        </div>
+        <div class="stat-block">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          <strong>40+</strong>
+          <span>Countries</span>
+        </div>
+      </div>
+
+      <div class="footer-newsletter">
+        <h4>Stay Updated</h4>
+        <p>Get release notes and shop-floor tips in your inbox.</p>
+        <form class="footer-newsletter-form">
+          <input type="email" class="footer-newsletter-input" placeholder="you@company.com" required>
+          <button type="submit" class="btn btn-primary footer-newsletter-btn">Subscribe</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2026 Stackly MRP. All rights reserved.</span>
+      <div class="footer-bottom-right">
+        <div class="footer-legal-links">
+          <a href="./404.html">Privacy Policy</a>
+          <a href="./404.html">Cookie Policy</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+
+gsap.registerPlugin(ScrollTrigger);
+
+/* ---------------------------------------------------------
+   0. Lightweight SplitText replacement (chars / words / lines)
+   GSAP's SplitText is a Club plugin, so we hand-roll the split
+   the same way the GSAP docs describe doing it manually.
+--------------------------------------------------------- */
+function splitWords(el){
+  const words = el.textContent.trim().split(/\s+/);
+  el.innerHTML = words.map(w => `<span class="w"><span class="wi">${w}</span></span>`).join(' ');
+  el.querySelectorAll('.w').forEach(s=>{ s.style.display='inline-block'; s.style.overflow='hidden'; s.style.verticalAlign='top'; });
+  el.querySelectorAll('.wi').forEach(s=>{ s.style.display='inline-block'; });
+  return el.querySelectorAll('.wi');
+}
+function splitChars(el){
+  const text = el.textContent.trim();
+  el.innerHTML = text.split('').map(c => `<span class="c">${c === ' ' ? '&nbsp;' : c}</span>`).join('');
+  el.querySelectorAll('.c').forEach(s=>{ s.style.display='inline-block'; });
+  return el.querySelectorAll('.c');
+}
+
+/* ---------------------------------------------------------
+   1. Preloader
+--------------------------------------------------------- */
+window.addEventListener('load', () => {
+  const pre = document.getElementById('preloader');
+  if(!pre){ startPageAnimations(); return; }
+  const bar = pre.querySelector('.pl-bar i');
+  const pct = pre.querySelector('.pl-pct');
+  const counter = { v: 0 };
+  gsap.to(counter, {
+    v: 100, duration: 1.4, ease:'power2.inOut',
+    onUpdate: () => { bar.style.width = counter.v + '%'; pct.textContent = Math.floor(counter.v) + '%'; },
+    onComplete: () => {
+      gsap.to(pre, { yPercent:-100, duration:.9, ease:'power4.inOut', delay:.15,
+        onComplete: () => { pre.style.display='none'; startPageAnimations(); }
+      });
+    }
+  });
+});
+
+/* Fallback: if there's no preloader element the load handler above
+   already calls startPageAnimations(). If JS runs after 'load' fired
+   (rare) kick things off directly. */
+if(document.readyState === 'complete' && !document.getElementById('preloader')){
+  startPageAnimations();
+}
+
+/* ---------------------------------------------------------
+   2. Nav: scroll state + mobile toggle
+--------------------------------------------------------- */
+const nav = document.querySelector('.site-nav');
+const toggle = document.querySelector('.nav-toggle');
+const navLinks = document.querySelector('.nav-links');
+const navBackdrop = document.getElementById('navBackdrop');
+
+window.addEventListener('scroll', () => {
+  if(!nav) return;
+  nav.classList.toggle('scrolled', window.scrollY > 40);
+}, { passive:true });
+
+function setNavOpen(open){
+  navLinks.classList.toggle('open', open);
+  navBackdrop?.classList.toggle('open', open);
+  document.body.classList.toggle('nav-open', open);
+  const spans = toggle.querySelectorAll('span');
+  gsap.to(spans[0], { rotate: open?45:0, y: open?6:0, duration:.3 });
+  gsap.to(spans[1], { opacity: open?0:1, duration:.2 });
+  gsap.to(spans[2], { rotate: open?-45:0, y: open?-6:0, duration:.3 });
+}
+
+if(toggle){
+  toggle.addEventListener('click', () => {
+    setNavOpen(!navLinks.classList.contains('open'));
+  });
+  navLinks?.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setNavOpen(false)));
+  navBackdrop?.addEventListener('click', () => setNavOpen(false));
+}
+
+/* ---------------------------------------------------------
+   3. Custom cursor
+--------------------------------------------------------- */
+const dot = document.querySelector('.cursor-dot');
+if(dot && matchMedia('(hover:hover) and (pointer:fine)').matches){
+  window.addEventListener('mousemove', e => {
+    gsap.to(dot, { x:e.clientX, y:e.clientY, duration:.05 });
+  });
+}
+
+/* ---------------------------------------------------------
+   4. Magnetic buttons
+--------------------------------------------------------- */
+/* Magnetic hover-follow disabled: buttons stay fixed in place on hover. */
+
+/* ---------------------------------------------------------
+   5. Ticker duplication for seamless marquee
+--------------------------------------------------------- */
+document.querySelectorAll('.ticker-track').forEach(track=>{
+  track.innerHTML += track.innerHTML;
+  const width = track.scrollWidth / 2;
+  gsap.to(track, { x: -width, duration: Math.max(18, width/60), ease:'none', repeat:-1 });
+});
+
+/* ---------------------------------------------------------
+   6. Custom select dropdowns (contained within viewport)
+--------------------------------------------------------- */
+document.querySelectorAll('[data-custom-select]').forEach(root=>{
+  const trigger = root.querySelector('.cs-trigger');
+  const label = root.querySelector('.cs-trigger-label');
+  const optionsList = root.querySelector('.cs-options');
+  const options = Array.from(root.querySelectorAll('.cs-option'));
+  const nativeSelect = root.querySelector('select');
+
+  function closeAll(){
+    document.querySelectorAll('[data-custom-select].open').forEach(el=>{
+      el.classList.remove('open','drop-up');
+      el.querySelector('.cs-trigger').setAttribute('aria-expanded','false');
+    });
+  }
+
+  function positionList(){
+    root.classList.remove('drop-up');
+    const triggerRect = trigger.getBoundingClientRect();
+    const spaceBelow = window.innerHeight - triggerRect.bottom;
+    const needed = Math.min(optionsList.scrollHeight, 216) + 8;
+    if(spaceBelow < needed && triggerRect.top > needed){
+      root.classList.add('drop-up');
+    }
+  }
+
+  function open(){
+    closeAll();
+    root.classList.add('open');
+    trigger.setAttribute('aria-expanded','true');
+    positionList();
+  }
+
+  function close(){
+    root.classList.remove('open','drop-up');
+    trigger.setAttribute('aria-expanded','false');
+  }
+
+  trigger.addEventListener('click', e=>{
+    e.stopPropagation();
+    root.classList.contains('open') ? close() : open();
+  });
+
+  options.forEach(opt=>{
+    opt.addEventListener('click', ()=>{
+      options.forEach(o=>o.setAttribute('aria-selected','false'));
+      opt.setAttribute('aria-selected','true');
+      label.textContent = opt.textContent;
+      if(nativeSelect) nativeSelect.value = opt.textContent.trim();
+      close();
+    });
+  });
+
+  window.addEventListener('resize', ()=>{ if(root.classList.contains('open')) positionList(); });
+  window.addEventListener('scroll', ()=>{ if(root.classList.contains('open')) positionList(); }, { passive:true, capture:true });
+});
+
+document.addEventListener('click', e=>{
+  if(!e.target.closest('[data-custom-select]')){
+    document.querySelectorAll('[data-custom-select].open').forEach(el=>{
+      el.classList.remove('open','drop-up');
+      el.querySelector('.cs-trigger').setAttribute('aria-expanded','false');
+    });
+  }
+});
+document.addEventListener('keydown', e=>{
+  if(e.key === 'Escape'){
+    document.querySelectorAll('[data-custom-select].open').forEach(el=>{
+      el.classList.remove('open','drop-up');
+      el.querySelector('.cs-trigger').setAttribute('aria-expanded','false');
+    });
+  }
+});
+
+/* ---------------------------------------------------------
+   7. Page-load hero + scroll-triggered reveals
+--------------------------------------------------------- */
+function startPageAnimations(){
+
+  /* Hero title split-word entrance */
+  document.querySelectorAll('[data-split="words"]').forEach(el=>{
+    const chars = splitWords(el);
+    gsap.set(chars, { yPercent:130, rotate:4 });
+    gsap.to(chars, { yPercent:0, rotate:0, duration:1.1, ease:'power4.out', stagger:0.045, delay:.15 });
+  });
+  document.querySelectorAll('[data-split="chars"]').forEach(el=>{
+    const chars = splitChars(el);
+    gsap.set(chars, { opacity:0, yPercent:60 });
+    gsap.to(chars, { opacity:1, yPercent:0, duration:.6, ease:'power3.out', stagger:0.02, delay:.2 });
+  });
+
+  /* Hero misc fade-ups (data-hero) */
+  gsap.utils.toArray('[data-hero]').forEach((el,i)=>{
+    gsap.fromTo(el, { opacity:0, y:26 }, { opacity:1, y:0, duration:1, ease:'power3.out', delay:.4 + i*0.12 });
+  });
+
+  /* Blueprint SVG draw-on-load */
+  document.querySelectorAll('.draw-svg path, .draw-svg line, .draw-svg circle, .draw-svg polyline').forEach(p=>{
+    const len = p.getTotalLength ? p.getTotalLength() : 100;
+    p.style.strokeDasharray = len;
+    p.style.strokeDashoffset = len;
+    gsap.to(p, { strokeDashoffset:0, duration:2.2, ease:'power2.inOut', delay:.3 });
+  });
+
+  /* Generic scroll reveal */
+  gsap.utils.toArray('.reveal').forEach(el=>{
+    gsap.fromTo(el, { opacity:0, y:40 }, {
+      opacity:1, y:0, duration:.9, ease:'power3.out',
+      scrollTrigger:{ trigger:el, start:'top 88%' }
+    });
+  });
+
+  /* Staggered reveal groups */
+  gsap.utils.toArray('.reveal-group').forEach(group=>{
+    const items = group.children;
+    gsap.fromTo(items, { opacity:0, y:44 }, {
+      opacity:1, y:0, duration:.8, ease:'power3.out', stagger:0.12,
+      scrollTrigger:{ trigger:group, start:'top 85%' }
+    });
+  });
+
+  /* Image clip-reveal */
+  gsap.utils.toArray('.img-reveal').forEach(el=>{
+    gsap.fromTo(el, { clipPath:'inset(0 0 100% 0)' }, {
+      clipPath:'inset(0 0 0% 0)', duration:1.2, ease:'power4.out',
+      scrollTrigger:{ trigger:el, start:'top 85%' }
+    });
+    const img = el.querySelector('img');
+    if(img){
+      gsap.fromTo(img, { scale:1.25 }, {
+        scale:1, duration:1.6, ease:'power3.out',
+        scrollTrigger:{ trigger:el, start:'top 85%' }
+      });
+    }
+  });
+
+  /* Parallax layers */
+  gsap.utils.toArray('[data-parallax]').forEach(el=>{
+    const speed = parseFloat(el.dataset.parallax) || 0.2;
+    gsap.to(el, { yPercent: speed*100, ease:'none', scrollTrigger:{ trigger: el.parentElement, start:'top bottom', end:'bottom top', scrub:true } });
+  });
+
+  /* Number counters */
+  gsap.utils.toArray('[data-counter]').forEach(el=>{
+    const target = parseFloat(el.dataset.counter);
+    const decimals = (el.dataset.counter.split('.')[1] || '').length;
+    const counter = { v:0 };
+    ScrollTrigger.create({
+      trigger: el, start:'top 90%', once:true,
+      onEnter: () => gsap.to(counter, { v: target, duration:1.8, ease:'power2.out',
+        onUpdate: () => el.textContent = counter.v.toFixed(decimals) + (el.dataset.suffix||'') })
+    });
+  });
+
+  /* Card tilt on hover */
+  document.querySelectorAll('.tilt').forEach(card=>{
+    card.addEventListener('mousemove', e=>{
+      const r = card.getBoundingClientRect();
+      const px = (e.clientX - r.left)/r.width - .5;
+      const py = (e.clientY - r.top)/r.height - .5;
+      gsap.to(card, { rotateY: px*8, rotateX: -py*8, duration:.4, ease:'power2.out', transformPerspective:700 });
+    });
+    card.addEventListener('mouseleave', ()=> gsap.to(card, { rotateY:0, rotateX:0, duration:.6, ease:'power3.out' }));
+  });
+
+  /* Horizontal process rail (if present) */
+  const rail = document.querySelector('.process-rail');
+  if(rail){
+    const track = rail.querySelector('.process-track');
+    const distance = () => track.scrollWidth - rail.clientWidth;
+    ScrollTrigger.create({
+      trigger: rail, start:'top top', end:() => '+=' + distance(), pin:true, scrub:1,
+      onUpdate: self => { track.style.transform = `translateX(-${self.progress * distance()}px)`; }
+    });
+  }
+
+  ScrollTrigger.refresh();
+}
+
+/* If load already fired before this script executed (rare on fast caches) */
+document.addEventListener('DOMContentLoaded', () => {
+  if(document.readyState === 'complete' || performance.timing.loadEventEnd > 0){
+    // safety net only; startPageAnimations is normally invoked from the load handler
+  }
+});
+
+</script>
+<script>
+(function(){
+  function showNewsletterToast(email){
+    var existing = document.querySelector('.newsletter-toast');
+    if(existing) existing.remove();
+    var toast = document.createElement('div');
+    toast.className = 'newsletter-toast';
+    toast.setAttribute('role', 'status');
+    toast.innerHTML =
+      '<span class="newsletter-toast-icon">' +
+        '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>' +
+      '</span>' +
+      '<span class="newsletter-toast-text">' +
+        '<strong>You\'re subscribed!</strong>' +
+        '<span>We\'ll send updates to ' + email + '</span>' +
+      '</span>';
+    document.body.appendChild(toast);
+    requestAnimationFrame(function(){ toast.classList.add('show'); });
+    setTimeout(function(){
+      toast.classList.remove('show');
+      setTimeout(function(){ toast.remove(); }, 400);
+    }, 3800);
+  }
+
+  document.querySelectorAll('.footer-newsletter-form').forEach(function(form){
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      var input = form.querySelector('.footer-newsletter-input');
+      var email = input.value.trim();
+      if(!email || !input.checkValidity()){
+        input.focus();
+        return;
+      }
+      showNewsletterToast(email);
+      form.reset();
+      window.location.href = '404.html';
+    });
+  });
+})();
+</script>
+<script>
+/* ---------------------------------------------------------
+   Contact form validation
+   - Text-only fields (First name, Last name, Company): letters,
+     spaces, apostrophes and hyphens only (Company also allows
+     numbers/&/. for legal entity names).
+   - Number-only field (Phone): digits only.
+   - Email: standard email format.
+   - On successful validation -> redirect to 404.html.
+--------------------------------------------------------- */
+(function(){
+  var form = document.getElementById('contactForm');
+  if(!form) return;
+
+  var TEXT_PATTERN = /^[A-Za-z\s'-]+$/;
+  var COMPANY_PATTERN = /^[A-Za-z0-9\s'&.-]+$/;
+  var NUMBER_PATTERN = /^[0-9]+$/;
+  var EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  function fieldWrap(input){
+    return input.closest('.field');
+  }
+
+  function setError(input, show){
+    var wrap = fieldWrap(input);
+    if(!wrap) return;
+    wrap.classList.toggle('has-error', !!show);
+  }
+
+  // Block invalid characters as the user types (live filtering)
+  function attachLiveFilter(input, allowedPattern){
+    input.addEventListener('input', function(){
+      var v = input.value;
+      var cleaned = '';
+      for(var i=0;i<v.length;i++){
+        if(allowedPattern.test(v[i])) cleaned += v[i];
+      }
+      if(cleaned !== v){
+        var pos = input.selectionStart - (v.length - cleaned.length);
+        input.value = cleaned;
+        if(pos >= 0) input.setSelectionRange(pos, pos);
+      }
+    });
+  }
+
+  var firstName = form.querySelector('[name="firstName"]');
+  var lastName  = form.querySelector('[name="lastName"]');
+  var company   = form.querySelector('[name="company"]');
+  var phone     = form.querySelector('[name="phone"]');
+  var email     = form.querySelector('[name="email"]');
+
+  // Per-keystroke character filtering
+  if(firstName) attachLiveFilter(firstName, /[A-Za-z\s'-]/);
+  if(lastName)  attachLiveFilter(lastName, /[A-Za-z\s'-]/);
+  if(company)   attachLiveFilter(company, /[A-Za-z0-9\s'&.-]/);
+  if(phone)     attachLiveFilter(phone, /[0-9]/);
+
+  function validateField(input){
+    if(!input) return true;
+    var val = input.value.trim();
+    var required = input.hasAttribute('required');
+
+    if(input === firstName || input === lastName){
+      var ok = required ? (val.length > 0 && TEXT_PATTERN.test(val)) : (val === '' || TEXT_PATTERN.test(val));
+      setError(input, !ok);
+      return ok;
+    }
+    if(input === company){
+      var okC = required ? (val.length > 0 && COMPANY_PATTERN.test(val)) : (val === '' || COMPANY_PATTERN.test(val));
+      setError(input, !okC);
+      return okC;
+    }
+    if(input === phone){
+      var okP = (val === '' && !required) || NUMBER_PATTERN.test(val);
+      setError(input, !okP);
+      return okP;
+    }
+    if(input === email){
+      var okE = required ? (val.length > 0 && EMAIL_PATTERN.test(val)) : (val === '' || EMAIL_PATTERN.test(val));
+      setError(input, !okE);
+      return okE;
+    }
+    return true;
+  }
+
+  [firstName, lastName, company, phone, email].forEach(function(input){
+    if(!input) return;
+    input.addEventListener('blur', function(){ validateField(input); });
+  });
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+
+    var validations = [
+      validateField(firstName),
+      validateField(lastName),
+      validateField(email),
+      validateField(phone),
+      validateField(company)
+    ];
+
+    var allValid = validations.every(Boolean);
+
+    if(!allValid){
+      var firstInvalid = form.querySelector('.field.has-error input, .field.has-error select, .field.has-error textarea');
+      if(firstInvalid) firstInvalid.focus();
+      return;
+    }
+
+    // All good — send them on to the 404 page
+    window.location.href = '404.html';
+  });
+})();
+</script>
+</body>
+</html>

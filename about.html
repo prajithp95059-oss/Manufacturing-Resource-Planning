@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About — Stackly MRP</title>
+<meta name="description" content="Why Stackly MRP exists, the team behind it, and how we build planning software for real manufacturing floors.">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+:root{
+  /* palette */
+  --ink:        #10131A;
+  --ink-2:      #171B23;
+  --panel:      #1A2029;
+  --panel-2:    #202834;
+  --steel:      #2C3542;
+  --steel-2:    #3A4553;
+  --paper:      #F3F0E8;
+  --paper-2:    #EAE5D8;
+  --blueprint:  #58A9E0;
+  --blueprint-2:#3D7FB0;
+  --amber:      #F0A63A;
+  --amber-2:    #D68C1F;
+  --text-hi:    #EDEFF2;
+  --text-lo:    #93A0AD;
+  --text-lo-2:  #6C7683;
+  --ok:         #62C384;
+  --danger:     #E2645F;
+
+  /* type */
+  --f-display: 'Space Grotesk', sans-serif;
+  --f-body: 'Inter', sans-serif;
+  --f-mono: 'IBM Plex Mono', monospace;
+
+  /* layout */
+  --maxw: 1500px;
+  --pad: clamp(20px, 5vw, 64px);
+  --radius: 14px;
+  --radius-sm: 8px;
+
+  --ease-out: cubic-bezier(.16,.84,.44,1);
+  --ease-in-out: cubic-bezier(.65,0,.35,1);
+}
+
+*,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
+html{ scroll-behavior:smooth; }
+html,body{ background:var(--ink); color:var(--text-hi); }
+body{
+  font-family:var(--f-body);
+  font-size:16px;
+  line-height:1.6;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+body.nav-open{ overflow:hidden; }
+img{ max-width:100%; display:block; }
+a{ color:inherit; text-decoration:none; }
+ul{ list-style:none; }
+button{ font-family:inherit; cursor:pointer; border:none; background:none; color:inherit; }
+input,textarea,select{ font-family:inherit; font-size:inherit; color:inherit; }
+svg{ display:block; }
+
+::selection{ background:var(--blueprint); color:var(--ink); }
+
+@media (prefers-reduced-motion: reduce){
+  *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important; }
+}
+
+/* focus visibility */
+a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible{
+  outline:2px solid var(--blueprint);
+  outline-offset:3px;
+  border-radius:4px;
+}
+
+/* ---------- typography ---------- */
+h1,h2,h3,h4{ font-family:var(--f-display); font-weight:600; line-height:1.08; letter-spacing:-0.01em; color:var(--text-hi); }
+h1{ font-size:clamp(2.6rem, 6vw, 5.2rem); }
+h2{ font-size:clamp(2rem, 4.2vw, 3.4rem); }
+h3{ font-size:clamp(1.3rem, 2.2vw, 1.8rem); }
+p{ color:var(--text-lo); max-width:60ch; }
+.mono{ font-family:var(--f-mono); letter-spacing:.02em; }
+
+.eyebrow{
+  display:inline-flex; align-items:center; gap:10px;
+  font-family:var(--f-mono); font-size:.78rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--blueprint); margin-bottom:18px;
+}
+.eyebrow::before{ content:''; width:22px; height:1px; background:var(--blueprint); }
+
+.section-tag{ color:var(--amber); }
+
+/* ---------- layout helpers ---------- */
+.wrap{ max-width:var(--maxw); margin-inline:auto; padding-inline:var(--pad); }
+section{ position:relative; padding-block: clamp(64px, 10vw, 140px); }
+.grid{ display:grid; gap:24px; }
+.g-2{ grid-template-columns:repeat(2,1fr); }
+.g-3{ grid-template-columns:repeat(3,1fr); }
+.g-4{ grid-template-columns:repeat(4,1fr); }
+
+.btn{
+  display:inline-flex; align-items:center; gap:10px;
+  font-family:var(--f-mono); font-size:.82rem; letter-spacing:.06em; text-transform:uppercase;
+  padding:15px 28px; border-radius:999px; white-space:nowrap;
+  transition:transform .4s var(--ease-out), background .3s, color .3s, border-color .3s, box-shadow .3s;
+}
+.btn-primary{ background:var(--amber); color:#1A1204; font-weight:600; }
+.btn-primary:hover{ box-shadow:0 14px 30px -10px rgba(240,166,58,.55); }
+.btn-primary.nav-login-desktop, .btn-primary.nav-login-mobile{ color:#fff; }
+.btn-ghost{ border:1px solid var(--steel-2); color:var(--text-hi); }
+.btn-ghost:hover{ border-color:var(--blueprint); color:var(--blueprint); }
+.btn-block{ width:100%; justify-content:center; }
+.btn svg{ width:15px; height:15px; }
+
+.card{
+  background:linear-gradient(180deg, var(--panel), var(--panel-2));
+  border:1px solid var(--steel);
+  border-radius:var(--radius);
+  padding:32px;
+  position:relative;
+  overflow:hidden;
+}
+.card::after{
+  content:''; position:absolute; inset:0; padding:1px; border-radius:inherit;
+  background:linear-gradient(140deg, rgba(88,169,224,.35), transparent 40%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none;
+}
+
+.stat{ font-family:var(--f-display); font-size:clamp(2.2rem,4vw,3.4rem); color:var(--text-hi); }
+.stat small{ display:block; font-family:var(--f-mono); font-size:.72rem; letter-spacing:.1em; text-transform:uppercase; color:var(--text-lo-2); margin-top:6px; }
+
+/* ---------- background texture ---------- */
+.blueprint-grid{
+  position:absolute; inset:0; pointer-events:none;
+  background-image:
+    linear-gradient(rgba(88,169,224,.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(88,169,224,.08) 1px, transparent 1px);
+  background-size:56px 56px;
+  mask-image:radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 100%);
+}
+.noise-veil{ position:absolute; inset:0; pointer-events:none; background:radial-gradient(ellipse 60% 50% at 50% -10%, rgba(88,169,224,.14), transparent 60%); }
+
+/* ---------- preloader ---------- */
+#preloader{
+  position:fixed; inset:0; z-index:9999; background:var(--ink);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px;
+}
+#preloader .pl-logo{ font-family:var(--f-display); font-size:1.4rem; letter-spacing:.04em; display:flex; align-items:center; gap:10px;}
+#preloader .pl-logo span{ color:var(--amber); }
+#preloader .pl-bar{ width:min(280px,60vw); height:2px; background:var(--steel); position:relative; overflow:hidden; }
+#preloader .pl-bar i{ position:absolute; inset:0; width:0%; background:var(--blueprint); }
+#preloader .pl-pct{ font-family:var(--f-mono); font-size:.75rem; color:var(--text-lo); letter-spacing:.1em; }
+
+/* ---------- custom cursor dot (desktop only) ---------- */
+.cursor-dot{ position:fixed; top:0; left:0; width:8px; height:8px; border-radius:50%; background:var(--amber); pointer-events:none; z-index:9998; transform:translate(-50%,-50%); mix-blend-mode:difference; display:none; }
+@media (hover:hover) and (pointer:fine){ .cursor-dot{ display:block; } }
+
+/* =========================================================
+   NAV
+   ========================================================= */
+.site-nav{
+  position:fixed; top:0; left:0; right:0; z-index:1000;
+  display:grid; grid-template-columns:auto 1fr auto; align-items:center;
+  padding:20px; padding-inline:max(var(--pad), calc((100% - var(--maxw)) / 2 + var(--pad)));
+  background:rgba(16,19,26,0);
+  border-bottom:1px solid transparent;
+  transition:background .4s, border-color .4s, padding .4s;
+}
+.site-nav.scrolled{ background:rgba(16,19,26,.86); backdrop-filter:blur(14px); border-color:var(--steel); padding-block:14px; }
+.logo{ display:flex; align-items:center; gap:10px; font-family:var(--f-display); font-size:1.2rem; font-weight:700; letter-spacing:.01em; }
+.logo img{ height:70px; width:auto; }
+.nav-links{ display:flex; align-items:center; justify-content:center; gap:36px; }
+.nav-links a{
+  position:relative; font-family:var(--f-mono); font-size:.82rem; letter-spacing:.04em; text-transform:uppercase; color:var(--text-lo);
+  padding-block:4px; transition:color .3s;
+}
+.nav-links a::after{ content:''; position:absolute; left:0; bottom:0; width:0; height:1px; background:var(--amber); transition:width .3s var(--ease-out); }
+.nav-links a:hover, .nav-links a.active{ color:var(--text-hi); }
+.nav-links a.nav-login-mobile{ display:none; }
+.nav-links a:hover::after, .nav-links a.active::after{ width:100%; }
+.nav-cta{ display:flex; align-items:center; gap:16px; flex-shrink:0; justify-self:end; }
+.nav-toggle{ display:none; flex-direction:column; gap:5px; width:26px; z-index:1200; }
+.nav-toggle span{ height:2px; background:var(--text-hi); border-radius:2px; transition:transform .35s var(--ease-out), opacity .3s; }
+
+/* mobile nav backdrop */
+.nav-backdrop{
+  position:fixed; inset:0; background:rgba(8,10,14,.55); backdrop-filter:blur(2px);
+  opacity:0; visibility:hidden; transition:opacity .4s var(--ease-in-out), visibility 0s linear .4s;
+  z-index:900;
+}
+.nav-backdrop.open{ opacity:1; visibility:visible; transition:opacity .4s var(--ease-in-out); }
+
+/* mobile nav */
+@media (max-width: 980px){
+  .nav-links{
+    position:fixed; top:0; right:0; bottom:0; left:auto;
+    width:min(360px,84vw);
+    height:100dvh;
+    background:var(--ink-2);
+    flex-direction:column; align-items:flex-start; justify-content:center; gap:26px; padding:0 40px;
+    border-left:1px solid var(--steel);
+    box-shadow:-24px 0 60px rgba(0,0,0,.5);
+    transform:translateX(100%);
+    transition:transform .5s var(--ease-in-out), visibility 0s linear .5s;
+    z-index:1100;
+    visibility:hidden;
+  }
+  .nav-links.open{ transform:translateX(0); transition:transform .5s var(--ease-in-out); visibility:visible; }
+  .nav-links a{ font-size:1.1rem; }
+  .nav-toggle{ display:flex; }
+  .nav-cta .btn-ghost{ display:none; }
+  .nav-cta .nav-login-desktop{ display:none; }
+  .nav-links a.nav-login-mobile{ display:inline-flex; align-items:center; justify-content:center; margin-top:8px; }
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+.site-footer{ background:var(--ink-2); border-top:1px solid var(--steel); padding-block:72px 0; position:relative; overflow:hidden; }
+.footer-grid{ display:grid; grid-template-columns:1.3fr .8fr .8fr .8fr 1.05fr; gap:40px; padding-bottom:52px; }
+.footer-brand p{ margin-top:14px; max-width:34ch; }
+.footer-tag{ font-family:var(--f-mono); font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; color:var(--amber); margin-top:10px; }
+.footer-col h4{ position:relative; font-family:var(--f-mono); font-size:.76rem; letter-spacing:.1em; text-transform:uppercase; color:var(--amber); margin-bottom:22px; padding-bottom:12px; }
+.footer-col h4::after{ content:''; position:absolute; left:0; bottom:0; width:22px; height:2px; background:var(--amber); }
+.footer-col a{ display:block; color:var(--text-lo); font-size:.92rem; padding-block:7px; transition:color .3s, transform .3s; }
+.footer-col a:hover{ color:var(--blueprint); }
+.footer-bottom{ display:flex; justify-content:space-between; align-items:center; padding-block:26px; border-top:1px solid var(--steel); font-family:var(--f-mono); font-size:.76rem; color:var(--text-lo-2); flex-wrap:wrap; gap:14px; }
+.footer-social{ display:flex; gap:14px; flex-wrap:wrap; margin-top:20px; }
+.footer-social a{ width:36px; height:36px; border:1px solid var(--steel-2); border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--text-lo); transition:.3s; flex-shrink:0; }
+.footer-social a:hover{ border-color:var(--amber); color:var(--amber); }
+
+.footer-contact-line{ display:flex; align-items:center; gap:10px; color:var(--text-lo); font-size:.88rem; padding-block:7px; transition:color .3s; }
+a.footer-contact-line:hover{ color:var(--blueprint); }
+.footer-contact-line svg{ color:var(--amber); flex-shrink:0; }
+
+.footer-highlight{ display:flex; gap:14px; margin-top:20px; padding:18px; border:1px solid var(--steel); border-radius:12px; background:linear-gradient(180deg, var(--panel), var(--panel-2)); }
+.footer-highlight-icon{ width:42px; height:42px; border-radius:9px; background:rgba(240,166,58,.12); color:var(--amber); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.footer-highlight strong{ display:block; font-size:.94rem; line-height:1.35; color:var(--text-hi); margin-bottom:6px; }
+.footer-highlight p{ font-size:.8rem; margin:0 0 10px; }
+.footer-highlight-link{ display:inline-flex; align-items:center; gap:6px; color:var(--amber); font-size:.82rem; font-weight:600; transition:gap .3s; }
+.footer-highlight-link:hover{ gap:10px; }
+
+.footer-trust{ display:grid; grid-template-columns:1.05fr 1.6fr 1.05fr; gap:36px; align-items:center; padding-block:40px; border-top:1px solid var(--steel); }
+.trust-badge{ display:flex; gap:14px; align-items:flex-start; }
+.trust-badge-icon{ width:52px; height:52px; border:1px solid var(--steel-2); border-radius:12px; display:flex; align-items:center; justify-content:center; color:var(--blueprint); flex-shrink:0; }
+.trust-badge strong{ display:block; margin-bottom:5px; color:var(--text-hi); }
+.trust-badge p{ font-size:.85rem; margin:0; max-width:30ch; }
+
+.footer-stats{ display:grid; grid-template-columns:repeat(4,1fr); gap:18px; }
+.stat-block{ text-align:center; }
+.stat-block svg{ color:var(--amber); margin-bottom:8px; }
+.stat-block strong{ display:block; font-family:var(--f-mono); font-size:1.5rem; color:var(--text-hi); }
+.stat-block span{ display:block; font-size:.74rem; color:var(--text-lo-2); margin-top:4px; }
+
+.footer-newsletter h4{ font-family:var(--f-mono); font-size:.76rem; letter-spacing:.1em; text-transform:uppercase; color:var(--amber); margin-bottom:10px; }
+.footer-newsletter p{ font-size:.84rem; margin-bottom:14px; }
+.footer-newsletter-form{ display:flex; gap:8px; flex-wrap:wrap; }
+.footer-newsletter-input{ flex:1 1 160px; min-width:0; background:var(--panel); border:1px solid var(--steel-2); border-radius:8px; padding:10px 12px; font-size:.85rem; color:var(--text-hi); }
+.footer-newsletter-input:focus{ outline:none; border-color:var(--amber); }
+.footer-newsletter-btn{ flex-shrink:0; padding:10px 16px; white-space:nowrap; }
+
+/* Newsletter toast */
+.newsletter-toast{
+  position:fixed; left:50%; bottom:28px; transform:translate(-50%, 16px);
+  display:flex; align-items:center; gap:12px; max-width:min(360px, calc(100vw - 32px));
+  background:var(--panel-2); border:1px solid var(--steel-2); border-radius:12px;
+  padding:14px 18px; box-shadow:0 12px 32px rgba(0,0,0,.4);
+  opacity:0; pointer-events:none; transition:opacity .35s ease, transform .35s ease;
+  z-index:10000;
+}
+.newsletter-toast.show{ opacity:1; transform:translate(-50%, 0); }
+.newsletter-toast-icon{ width:30px; height:30px; border-radius:50%; background:rgba(240,166,58,.15); color:var(--amber); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.newsletter-toast-text strong{ display:block; font-size:.86rem; color:var(--text-hi); margin-bottom:2px; }
+.newsletter-toast-text span{ display:block; font-size:.78rem; color:var(--text-lo); }
+
+.footer-bottom-right{ display:flex; align-items:center; gap:10px; }
+.footer-secure{ display:flex; align-items:center; gap:8px; color:var(--text-lo-2); }
+.footer-legal-links{ display:flex; align-items:center; gap:22px; }
+.footer-legal-links a{ font-family:var(--f-mono); font-size:.78rem; color:var(--text-lo-2); transition:color .3s; }
+.footer-legal-links a:hover{ color:var(--blueprint); }
+.footer-secure svg{ color:var(--text-lo-2); flex-shrink:0; }
+
+@media (max-width: 980px){
+  .footer-grid{ grid-template-columns:repeat(2,1fr); }
+  .footer-trust{ grid-template-columns:1fr; gap:28px; }
+  .footer-stats{ grid-template-columns:repeat(4,1fr); }
+}
+@media (max-width: 600px){
+  .footer-grid{ grid-template-columns:1fr; }
+  .footer-bottom{ flex-direction:column; align-items:flex-start; }
+  .footer-stats{ grid-template-columns:repeat(2,1fr); }
+
+  .footer-newsletter{ max-width:340px; }
+  .footer-newsletter-form{ flex-direction:column; gap:10px; }
+  .footer-newsletter-input{
+    flex:none;
+    width:100%;
+    padding:9px 12px;
+    font-size:.82rem;
+  }
+  .footer-newsletter-btn{
+    flex:none;
+    width:100%;
+    padding:9px 14px;
+    font-size:.72rem;
+     justify-content:center;
+  }
+
+  .newsletter-toast{ bottom:16px; max-width:calc(100vw - 24px); padding:10px 16px; }
+}
+
+/* =========================================================
+   MARQUEE / TICKER (signature element)
+   ========================================================= */
+.ticker{
+  border-top:1px solid var(--steel); border-bottom:1px solid var(--steel);
+  background:var(--ink-2); overflow:hidden; padding-block:14px;
+}
+.ticker-track{ display:flex; gap:56px; width:max-content; white-space:nowrap; }
+.ticker-track span{ font-family:var(--f-mono); font-size:.82rem; letter-spacing:.05em; color:var(--text-lo); display:flex; align-items:center; gap:10px; }
+.ticker-track span b{ color:var(--amber); }
+.ticker-track span::before{ content:'◆'; color:var(--blueprint); font-size:.6rem; }
+
+/* =========================================================
+   RESPONSIVE GRID COLLAPSES (shared across pages)
+   ========================================================= */
+@media (max-width: 1100px){ .g-4{ grid-template-columns:repeat(2,1fr); } .g-3{ grid-template-columns:repeat(2,1fr);} }
+@media (max-width: 720px){ .g-2,.g-3,.g-4{ grid-template-columns:1fr; } }
+
+/* generic reveal helpers targeted by GSAP */
+.reveal{ opacity:0; }
+.split-line{ overflow:hidden; }
+
+  .about-hero{ padding-top:150px; padding-bottom:80px; }
+  .about-hero-grid{ display:grid; grid-template-columns:1.05fr .95fr; gap:56px; align-items:center; }
+  .about-hero h1{ max-width:16ch; }
+  .about-hero p.lead{ max-width:52ch; margin-top:20px; font-size:1.1rem; }
+  .about-hero-media{ border-radius:20px; overflow:hidden; aspect-ratio:4/5; border:1px solid var(--steel); }
+  .about-hero-media img{ width:100%; height:100%; object-fit:cover; }
+
+  .mission-split{ display:grid; grid-template-columns:.9fr 1.1fr; gap:64px; }
+  .mission-num{ font-family:var(--f-mono); font-size:.8rem; color:var(--blueprint); }
+
+  .values-grid{ margin-top:48px; }
+  .value-card svg{ width:28px; height:28px; color:var(--amber); margin-bottom:18px; }
+
+  .timeline{ position:relative; margin-top:56px; padding-left:36px; border-left:1px solid var(--steel); }
+  .timeline-item{ position:relative; padding-bottom:52px; }
+  .timeline-item:last-child{ padding-bottom:0; }
+  .timeline-item::before{ content:''; position:absolute; left:-42px; top:4px; width:11px; height:11px; border-radius:50%; background:var(--amber); box-shadow:0 0 0 4px var(--ink), 0 0 0 5px var(--steel); }
+  .timeline-year{ font-family:var(--f-mono); color:var(--blueprint); font-size:.85rem; margin-bottom:8px; display:block; }
+
+  .team-grid{ margin-top:48px; }
+  .team-card img{ width:100%; aspect-ratio:4/5; object-fit:cover; border-radius:14px; margin-bottom:16px; filter:grayscale(.3); transition:filter .4s; }
+  .team-card:hover img{ filter:grayscale(0); }
+  .team-card span{ font-family:var(--f-mono); font-size:.76rem; color:var(--text-lo-2); text-transform:uppercase; letter-spacing:.06em; }
+
+  .plants-band{ background:var(--ink-2); border-top:1px solid var(--steel); border-bottom:1px solid var(--steel); }
+  .plants-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+  .plant-card img{ width:100%; aspect-ratio:16/11; object-fit:cover; border-radius:14px; margin-bottom:14px; }
+
+  @media (max-width:980px){
+    .mission-split{ grid-template-columns:1fr; }
+    .about-hero-grid{ grid-template-columns:1fr; gap:36px; }
+    .about-hero-media{ aspect-ratio:16/10; }
+    .plants-grid{ grid-template-columns:1fr 1fr; }
+  }
+  @media (max-width:600px){ .plants-grid{ grid-template-columns:1fr; } }
+  .footer-col .footer-contact-line{
+  display:flex; align-items:center; gap:10px;
+  color:var(--text-lo); font-size:.88rem; padding-block:7px;
+  transition:color .3s;
+}
+</style>
+</head>
+<body>
+
+
+
+<header class="site-nav">
+  <a href="index.html" class="logo"><img src="./stackly.webp" alt="Stackly"></a>
+  <nav class="nav-links" id="navLinks">
+    <a href="index.html">Home</a>
+    <a href="about.html" class="active">About</a>
+    <a href="services.html">Services</a>
+    <a href="resources.html">Resources</a>
+    <a href="blog.html">Blog</a>
+    <a href="contact.html">Contact</a>
+    <a href="login.html" class="btn btn-primary magnetic nav-login-mobile">Login</a>
+  </nav>
+  <div class="nav-cta">
+    <a href="login.html" class="btn btn-primary magnetic nav-login-desktop">Login</a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+<div class="nav-backdrop" id="navBackdrop"></div>
+
+<main>
+  <section class="about-hero">
+    <div class="blueprint-grid"></div>
+    <div class="wrap about-hero-grid">
+      <div>
+        <div class="eyebrow">About Stackly</div>
+        <h1 data-split="words">Built by people who've stood on the floor.</h1>
+        <p class="lead" data-hero>Stackly MRP started with a simple complaint from a plant manager: "the schedule in the system and the schedule on the floor are two different things." We've spent six years closing that gap.</p>
+      </div>
+      <div class="about-hero-media reveal">
+        <img src="./assets/i1.webp" alt="Close-up of a row of cars parked side by side, headlights and grille in focus">
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap mission-split">
+      <div class="reveal">
+        <div class="mission-num">Our mission</div>
+        <h2 style="margin-top:14px">Close the gap between the plan and the plant.</h2>
+      </div>
+      <div class="reveal">
+        <p style="max-width:60ch">Manufacturing software has historically forced a choice: powerful planning tools that ignore floor reality, or floor-friendly apps with no real planning logic underneath. Stackly refuses that trade-off. We build finite-capacity planning that updates from real machine and labor signals, and floor tools simple enough that an operator opens them without training.</p>
+        <p style="max-width:60ch; margin-top:18px">Every module ships from the same conversations: sitting in on a shift change, watching a scheduler fight a spreadsheet, tracing a non-conformance back through three systems that don't talk to each other. We build the tool we watched people need.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="eyebrow reveal">What we hold to</div>
+      <h2 class="reveal">Four things we don't compromise on.</h2>
+      <div class="grid g-4 values-grid reveal-group">
+        <div class="card value-card">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+          <h3>Real-time, not nightly</h3>
+          <p style="margin-top:10px">If a number is more than a few seconds old, it's a report — not a system of record. We build for live state.</p>
+        </div>
+        <div class="card value-card">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 19h16M4 15l4-6 4 3 4-8 4 5"/></svg>
+          <h3>Traceable by default</h3>
+          <p style="margin-top:10px">Genealogy isn't a premium add-on. Every lot, every operation, every shipment — tracked from day one.</p>
+        </div>
+        <div class="card value-card">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 12l6 6L21 6"/></svg>
+          <h3>Operator-first UI</h3>
+          <p style="margin-top:10px">If it needs a training manual on the shop floor, we redesign it. Two taps, not twelve.</p>
+        </div>
+        <div class="card value-card">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 10h16"/></svg>
+          <h3>Open by design</h3>
+          <p style="margin-top:10px">Documented APIs and EDI out of the box. Your data leaves whenever you want it to.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="eyebrow reveal">How we got here</div>
+      <h2 class="reveal">Six years, four modules, one loop.</h2>
+      <div class="timeline reveal-group">
+        <div class="timeline-item">
+          <span class="timeline-year mono">2020</span>
+          <h3>Founded on a shop floor</h3>
+          <p style="margin-top:8px">Started as a scheduling tool for a single contract manufacturer in Coimbatore, built alongside the planners who'd use it.</p>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-year mono">2022</span>
+          <h3>Procurement & inventory modules ship</h3>
+          <p style="margin-top:8px">Auto-generated POs and live inventory ledgers closed the loop between what's planned and what's on the shelf.</p>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-year mono">2024</span>
+          <h3>Traceability & quality holds</h3>
+          <p style="margin-top:8px">Full genealogy tracking launched after three customers asked for it in the same audit cycle.</p>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-year mono">2026</span>
+          <h3>640+ plants, one live system</h3>
+          <p style="margin-top:8px">Stackly now schedules production across discrete, process and mixed-mode manufacturers on five continents.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="plants-band">
+    <div class="wrap">
+      <div class="eyebrow reveal">Where Stackly runs</div>
+      <h2 class="reveal">On the floor, not just in the office.</h2>
+      <div class="plants-grid reveal-group" style="margin-top:40px;">
+        <div class="plant-card"><img src="./assets/i2.webp" alt="Robotic welding arms on an assembly line"><h3 style="font-size:1.1rem">Discrete assembly</h3></div>
+        <div class="plant-card"><img src="./assets/i3.webp" alt="Industrial mixing tanks in a process plant"><h3 style="font-size:1.1rem">Process manufacturing</h3></div>
+        <div class="plant-card"><img src="./assets/i4.webp" alt="Machinist operating a CNC lathe"><h3 style="font-size:1.1rem">Precision machining</h3></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="eyebrow reveal">Leadership</div>
+      <h2 class="reveal">The people setting the direction.</h2>
+      <div class="grid g-4 team-grid reveal-group">
+        <div class="team-card">
+          <img src="./assets/i5.webp" alt="Portrait of Ananya Krishnan">
+          <h3 style="font-size:1.05rem">Ananya Krishnan</h3><span>Co-founder & CEO</span>
+        </div>
+        <div class="team-card">
+          <img src="./assets/i6.webp" alt="Portrait of Marcus Ihedigbo">
+          <h3 style="font-size:1.05rem">Rahul Menon</h3><span>Co-founder & CTO</span>
+        </div>
+        <div class="team-card">
+          <img src="./assets/i7.webp" alt="Portrait of a woman in an engineering office">
+          <h3 style="font-size:1.05rem">Priya Ramaswami</h3><span>VP, Customer Engineering</span>
+        </div>
+        <div class="team-card">
+          <img src="./assets/i8.webp" alt="Portrait of a man in a factory setting">
+          <h3 style="font-size:1.05rem">Daniel Okafor</h3><span>VP, Product</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-bottom:120px;">
+    <div class="cta-band reveal" style="border-radius:24px; padding:64px var(--pad); margin-inline:var(--pad); background:linear-gradient(160deg, var(--panel), var(--ink-2)); border:1px solid var(--steel); text-align:center;">
+      <div class="eyebrow" style="justify-content:center">Join the team</div>
+      <h2>We're hiring across engineering and customer success.</h2>
+      <div class="hero-cta" style="justify-content:center; margin-top:26px;">
+        <a href="./404.html" class="btn btn-primary magnetic">View Open Roles →</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="logo"><img src="./stackly.webp" alt="Stackly"></a>
+        <p class="footer-tag">Plan. Build. Ship.</p>
+        <p>Manufacturing resource planning built around how work actually moves through your plant — from plan to shipped part.</p>
+        <div class="footer-social">
+          <a href="./404.html" aria-label="LinkedIn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V8.98h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.31zM5.32 7.42a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM3.54 20.45h3.56V8.98H3.54v11.47z"/>
+            </svg>
+          </a>
+          <a href="./404.html" aria-label="X">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18.9 2H22l-6.77 7.74L23.2 22h-6.24l-4.89-6.39L6.48 22H3.36l7.24-8.28L2.8 2h6.4l4.42 5.84L18.9 2zm-1.1 17.9h1.73L8.29 4.02H6.43L17.8 19.9z"/>
+            </svg>
+          </a>
+          <a href="./404.html" aria-label="YouTube">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M23.5 6.2a3 3 0 0 0-2.1-2.12C19.55 3.5 12 3.5 12 3.5s-7.55 0-9.4.58A3 3 0 0 0 .5 6.2 31.5 31.5 0 0 0 0 12a31.5 31.5 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.12c1.85.58 9.4.58 9.4.58s7.55 0 9.4-.58a3 3 0 0 0 2.1-2.12A31.5 31.5 0 0 0 24 12a31.5 31.5 0 0 0-.5-5.8zM9.6 15.9V8.1l6.4 3.9-6.4 3.9z"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Quick links</h4>
+    <a href="index.html" class="active">Home</a>
+    <a href="about.html">About</a>
+    <a href="services.html">Services</a>
+    <a href="resources.html">Resources</a>
+    <a href="blog.html">Blog</a>
+    <a href="contact.html">Contact</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Resources</h4>
+        <a href="./404.html">Resource Center</a>
+        <a href="./404.html">Blog</a>
+        <a href="./404.html">Guides</a>
+        <a href="./404.html">Help Center</a>
+        <a href="./404.html">FAQ</a>
+        <a href="./404.html">Community</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="./404.html">Our Story</a>
+        <a href="./404.html">Careers</a>
+        <a href="./404.html">Partners</a>
+        <a href="./404.html">Press &amp; Media</a>
+        <a href="./404.html">Terms of Service</a>
+        <a href="./404.html">Privacy Policy</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Get In Touch</h4>
+        <a class="footer-contact-line" href="./404.html">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+          hello@stacklymrp.com
+        </a>
+        <a class="footer-contact-line" href="./404.html">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.11 4.18 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.72c.12.9.33 1.77.63 2.61a2 2 0 0 1-.45 2.11L8.09 9.63a16 16 0 0 0 6.28 6.28l1.19-1.19a2 2 0 0 1 2.11-.45c.84.3 1.71.51 2.61.63A2 2 0 0 1 22 16.92z"/></svg>
+          +91 98765 43210
+        </a>
+        <span class="footer-contact-line">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Salem, Tamil Nadu, India
+        </span>
+      </div>
+    </div>
+
+    <div class="footer-trust">
+      <div class="trust-badge">
+        <div class="trust-badge-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l8 4v5c0 5.25-3.4 9.74-8 11-4.6-1.26-8-5.75-8-11V6l8-4z"/><polyline points="9 12 11 14 15 10"/></svg>
+        </div>
+        <div>
+          <strong>Trusted on the Shop Floor</strong>
+          <p>Real-time plant data. Audit-ready records. Built for uptime.</p>
+        </div>
+      </div>
+
+      <div class="footer-stats">
+        <div class="stat-block">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          <strong>500+</strong>
+          <span>Plants Running Stackly</span>
+        </div>
+        <div class="stat-block">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="4" width="16" height="18" rx="2"/><path d="M9 2h6a1 1 0 0 1 1 1v2H8V3a1 1 0 0 1 1-1z"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="16" y2="16"/></svg>
+          <strong>12M+</strong>
+          <span>Work Orders Tracked</span>
+        </div>
+        <div class="stat-block">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          <strong>99.9%</strong>
+          <span>Platform Uptime</span>
+        </div>
+        <div class="stat-block">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          <strong>40+</strong>
+          <span>Countries</span>
+        </div>
+      </div>
+
+      <div class="footer-newsletter">
+        <h4>Stay Updated</h4>
+        <p>Get release notes and shop-floor tips in your inbox.</p>
+        <form class="footer-newsletter-form">
+          <input type="email" class="footer-newsletter-input" placeholder="you@company.com" required>
+          <button type="submit" class="btn btn-primary footer-newsletter-btn">Subscribe</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2026 Stackly MRP. All rights reserved.</span>
+      <div class="footer-bottom-right">
+        <div class="footer-legal-links">
+          <a href="./404.html">Privacy Policy</a>
+          <a href="./404.html">Cookie Policy</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+
+gsap.registerPlugin(ScrollTrigger);
+
+/* ---------------------------------------------------------
+   0. Lightweight SplitText replacement (chars / words / lines)
+   GSAP's SplitText is a Club plugin, so we hand-roll the split
+   the same way the GSAP docs describe doing it manually.
+--------------------------------------------------------- */
+function splitWords(el){
+  const words = el.textContent.trim().split(/\s+/);
+  el.innerHTML = words.map(w => `<span class="w"><span class="wi">${w}</span></span>`).join(' ');
+  el.querySelectorAll('.w').forEach(s=>{ s.style.display='inline-block'; s.style.overflow='hidden'; s.style.verticalAlign='top'; });
+  el.querySelectorAll('.wi').forEach(s=>{ s.style.display='inline-block'; });
+  return el.querySelectorAll('.wi');
+}
+function splitChars(el){
+  const text = el.textContent.trim();
+  el.innerHTML = text.split('').map(c => `<span class="c">${c === ' ' ? '&nbsp;' : c}</span>`).join('');
+  el.querySelectorAll('.c').forEach(s=>{ s.style.display='inline-block'; });
+  return el.querySelectorAll('.c');
+}
+
+/* ---------------------------------------------------------
+   1. Preloader
+--------------------------------------------------------- */
+window.addEventListener('load', () => {
+  const pre = document.getElementById('preloader');
+  if(!pre){ startPageAnimations(); return; }
+  const bar = pre.querySelector('.pl-bar i');
+  const pct = pre.querySelector('.pl-pct');
+  const counter = { v: 0 };
+  gsap.to(counter, {
+    v: 100, duration: 1.4, ease:'power2.inOut',
+    onUpdate: () => { bar.style.width = counter.v + '%'; pct.textContent = Math.floor(counter.v) + '%'; },
+    onComplete: () => {
+      gsap.to(pre, { yPercent:-100, duration:.9, ease:'power4.inOut', delay:.15,
+        onComplete: () => { pre.style.display='none'; startPageAnimations(); }
+      });
+    }
+  });
+});
+
+/* Fallback: if there's no preloader element the load handler above
+   already calls startPageAnimations(). If JS runs after 'load' fired
+   (rare) kick things off directly. */
+if(document.readyState === 'complete' && !document.getElementById('preloader')){
+  startPageAnimations();
+}
+
+/* ---------------------------------------------------------
+   2. Nav: scroll state + mobile toggle
+--------------------------------------------------------- */
+const nav = document.querySelector('.site-nav');
+const toggle = document.querySelector('.nav-toggle');
+const navLinks = document.querySelector('.nav-links');
+const navBackdrop = document.getElementById('navBackdrop');
+
+window.addEventListener('scroll', () => {
+  if(!nav) return;
+  nav.classList.toggle('scrolled', window.scrollY > 40);
+}, { passive:true });
+
+function setNavOpen(open){
+  navLinks.classList.toggle('open', open);
+  navBackdrop?.classList.toggle('open', open);
+  document.body.classList.toggle('nav-open', open);
+  const spans = toggle.querySelectorAll('span');
+  gsap.to(spans[0], { rotate: open?45:0, y: open?6:0, duration:.3 });
+  gsap.to(spans[1], { opacity: open?0:1, duration:.2 });
+  gsap.to(spans[2], { rotate: open?-45:0, y: open?-6:0, duration:.3 });
+}
+
+if(toggle){
+  toggle.addEventListener('click', () => {
+    setNavOpen(!navLinks.classList.contains('open'));
+  });
+  navLinks?.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setNavOpen(false)));
+  navBackdrop?.addEventListener('click', () => setNavOpen(false));
+}
+
+/* ---------------------------------------------------------
+   3. Custom cursor
+--------------------------------------------------------- */
+const dot = document.querySelector('.cursor-dot');
+if(dot && matchMedia('(hover:hover) and (pointer:fine)').matches){
+  window.addEventListener('mousemove', e => {
+    gsap.to(dot, { x:e.clientX, y:e.clientY, duration:.05 });
+  });
+}
+
+/* ---------------------------------------------------------
+   4. Magnetic buttons
+--------------------------------------------------------- */
+/* Magnetic hover-follow disabled: buttons stay fixed in place on hover. */
+
+/* ---------------------------------------------------------
+   5. Ticker duplication for seamless marquee
+--------------------------------------------------------- */
+document.querySelectorAll('.ticker-track').forEach(track=>{
+  track.innerHTML += track.innerHTML;
+  const width = track.scrollWidth / 2;
+  gsap.to(track, { x: -width, duration: Math.max(18, width/60), ease:'none', repeat:-1 });
+});
+
+/* ---------------------------------------------------------
+   6. Page-load hero + scroll-triggered reveals
+--------------------------------------------------------- */
+function startPageAnimations(){
+
+  /* Hero title split-word entrance */
+  document.querySelectorAll('[data-split="words"]').forEach(el=>{
+    const chars = splitWords(el);
+    gsap.set(chars, { yPercent:130, rotate:4 });
+    gsap.to(chars, { yPercent:0, rotate:0, duration:1.1, ease:'power4.out', stagger:0.045, delay:.15 });
+  });
+  document.querySelectorAll('[data-split="chars"]').forEach(el=>{
+    const chars = splitChars(el);
+    gsap.set(chars, { opacity:0, yPercent:60 });
+    gsap.to(chars, { opacity:1, yPercent:0, duration:.6, ease:'power3.out', stagger:0.02, delay:.2 });
+  });
+
+  /* Hero misc fade-ups (data-hero) */
+  gsap.utils.toArray('[data-hero]').forEach((el,i)=>{
+    gsap.fromTo(el, { opacity:0, y:26 }, { opacity:1, y:0, duration:1, ease:'power3.out', delay:.4 + i*0.12 });
+  });
+
+  /* Blueprint SVG draw-on-load */
+  document.querySelectorAll('.draw-svg path, .draw-svg line, .draw-svg circle, .draw-svg polyline').forEach(p=>{
+    const len = p.getTotalLength ? p.getTotalLength() : 100;
+    p.style.strokeDasharray = len;
+    p.style.strokeDashoffset = len;
+    gsap.to(p, { strokeDashoffset:0, duration:2.2, ease:'power2.inOut', delay:.3 });
+  });
+
+  /* Generic scroll reveal */
+  gsap.utils.toArray('.reveal').forEach(el=>{
+    gsap.fromTo(el, { opacity:0, y:40 }, {
+      opacity:1, y:0, duration:.9, ease:'power3.out',
+      scrollTrigger:{ trigger:el, start:'top 88%' }
+    });
+  });
+
+  /* Staggered reveal groups */
+  gsap.utils.toArray('.reveal-group').forEach(group=>{
+    const items = group.children;
+    gsap.fromTo(items, { opacity:0, y:44 }, {
+      opacity:1, y:0, duration:.8, ease:'power3.out', stagger:0.12,
+      scrollTrigger:{ trigger:group, start:'top 85%' }
+    });
+  });
+
+  /* Image clip-reveal */
+  gsap.utils.toArray('.img-reveal').forEach(el=>{
+    gsap.fromTo(el, { clipPath:'inset(0 0 100% 0)' }, {
+      clipPath:'inset(0 0 0% 0)', duration:1.2, ease:'power4.out',
+      scrollTrigger:{ trigger:el, start:'top 85%' }
+    });
+    const img = el.querySelector('img');
+    if(img){
+      gsap.fromTo(img, { scale:1.25 }, {
+        scale:1, duration:1.6, ease:'power3.out',
+        scrollTrigger:{ trigger:el, start:'top 85%' }
+      });
+    }
+  });
+
+  /* Parallax layers */
+  gsap.utils.toArray('[data-parallax]').forEach(el=>{
+    const speed = parseFloat(el.dataset.parallax) || 0.2;
+    gsap.to(el, { yPercent: speed*100, ease:'none', scrollTrigger:{ trigger: el.parentElement, start:'top bottom', end:'bottom top', scrub:true } });
+  });
+
+  /* Number counters */
+  gsap.utils.toArray('[data-counter]').forEach(el=>{
+    const target = parseFloat(el.dataset.counter);
+    const decimals = (el.dataset.counter.split('.')[1] || '').length;
+    const counter = { v:0 };
+    ScrollTrigger.create({
+      trigger: el, start:'top 90%', once:true,
+      onEnter: () => gsap.to(counter, { v: target, duration:1.8, ease:'power2.out',
+        onUpdate: () => el.textContent = counter.v.toFixed(decimals) + (el.dataset.suffix||'') })
+    });
+  });
+
+  /* Card tilt on hover */
+  document.querySelectorAll('.tilt').forEach(card=>{
+    card.addEventListener('mousemove', e=>{
+      const r = card.getBoundingClientRect();
+      const px = (e.clientX - r.left)/r.width - .5;
+      const py = (e.clientY - r.top)/r.height - .5;
+      gsap.to(card, { rotateY: px*8, rotateX: -py*8, duration:.4, ease:'power2.out', transformPerspective:700 });
+    });
+    card.addEventListener('mouseleave', ()=> gsap.to(card, { rotateY:0, rotateX:0, duration:.6, ease:'power3.out' }));
+  });
+
+  /* Horizontal process rail (if present) */
+  const rail = document.querySelector('.process-rail');
+  if(rail){
+    const track = rail.querySelector('.process-track');
+    const distance = () => track.scrollWidth - rail.clientWidth;
+    ScrollTrigger.create({
+      trigger: rail, start:'top top', end:() => '+=' + distance(), pin:true, scrub:1,
+      onUpdate: self => { track.style.transform = `translateX(-${self.progress * distance()}px)`; }
+    });
+  }
+
+  ScrollTrigger.refresh();
+}
+
+/* If load already fired before this script executed (rare on fast caches) */
+document.addEventListener('DOMContentLoaded', () => {
+  if(document.readyState === 'complete' || performance.timing.loadEventEnd > 0){
+    // safety net only; startPageAnimations is normally invoked from the load handler
+  }
+});
+
+</script>
+<script>
+(function(){
+  function showNewsletterToast(email){
+    var existing = document.querySelector('.newsletter-toast');
+    if(existing) existing.remove();
+    var toast = document.createElement('div');
+    toast.className = 'newsletter-toast';
+    toast.setAttribute('role', 'status');
+    toast.innerHTML =
+      '<span class="newsletter-toast-icon">' +
+        '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>' +
+      '</span>' +
+      '<span class="newsletter-toast-text">' +
+        '<strong>You\'re subscribed!</strong>' +
+        '<span>We\'ll send updates to ' + email + '</span>' +
+      '</span>';
+    document.body.appendChild(toast);
+    requestAnimationFrame(function(){ toast.classList.add('show'); });
+    setTimeout(function(){
+      toast.classList.remove('show');
+      setTimeout(function(){ toast.remove(); }, 400);
+    }, 3800);
+  }
+
+  document.querySelectorAll('.footer-newsletter-form').forEach(function(form){
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      var input = form.querySelector('.footer-newsletter-input');
+      var email = input.value.trim();
+      if(!email || !input.checkValidity()){
+        input.focus();
+        return;
+      }
+      showNewsletterToast(email);
+      form.reset();
+      window.location.href = '404.html';
+    });
+  });
+})();
+</script>
+</body>
+</html>
